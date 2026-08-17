@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>港澳台来深补贴与个税匹配器</title>
+<meta name="description" content="来深圳工作的中国香港、中国澳门、中国台湾居民，输入你的情况，匹配可申领的补贴与个税优惠，附官方一手来源。">
+<style>
+  :root{
+    --brand:#0052d9; --brand-d:#003cab; --ink:#1a1a1a; --sub:#6b7280;
+    --line:#e5e7eb; --bg:#f5f7fa; --card:#fff;
+    --ok:#0f6e56; --ok-bg:#e1f5ee;
+    --warn:#854f0b; --warn-bg:#faeeda;
+    --danger:#a32d2d; --danger-bg:#fcebeb;
+    --up:#d32029;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+       background:var(--bg);color:var(--ink);line-height:1.6;-webkit-text-size-adjust:100%}
+  .wrap{max-width:980px;margin:0 auto;padding:16px}
+  a{color:var(--brand)}
+
+  header{background:var(--brand);color:#fff;border-radius:14px;padding:22px 20px;margin-bottom:14px}
+  header h1{font-size:20px;font-weight:600;margin-bottom:6px}
+  header p{font-size:13px;opacity:.92}
+  .meta-bar{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;font-size:12px;opacity:.9}
+
+  .notice{border-radius:10px;padding:12px 14px;margin-bottom:14px;font-size:13px;display:none}
+  .notice.warn{background:var(--warn-bg);color:var(--warn);border:1px solid #f0d9a8;display:block}
+  .notice.danger{background:var(--danger-bg);color:var(--danger);border:1px solid #f3c0c0;display:block}
+
+  .layout{display:grid;grid-template-columns:320px 1fr;gap:14px;align-items:start}
+  @media(max-width:840px){.layout{grid-template-columns:1fr}}
+
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px}
+  .panel h2{font-size:15px;font-weight:600;margin-bottom:6px}
+  .panel .hint{font-size:12px;color:var(--sub);margin-bottom:14px}
+
+  .examples{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+  .examples button{font-size:12px;padding:6px 10px;border:1px solid var(--line);background:#fff;
+                   border-radius:16px;cursor:pointer;color:var(--brand)}
+  .examples button:hover{border-color:var(--brand);background:#f0f6ff}
+
+  .field{margin-bottom:12px}
+  .field label{display:block;font-size:13px;color:var(--sub);margin-bottom:5px}
+  select,input[type=number]{width:100%;padding:9px 10px;border:1px solid var(--line);
+       border-radius:8px;font-size:14px;background:#fff;color:var(--ink)}
+  .chk{display:flex;align-items:center;gap:8px;font-size:13px;margin-bottom:9px}
+  .chk input{width:auto;margin:0}
+  .btn{width:100%;background:var(--brand);color:#fff;border:none;padding:12px;
+       border-radius:9px;font-size:15px;font-weight:600;cursor:pointer;margin-top:8px}
+  .btn:hover{background:var(--brand-d)}
+  .btn:disabled{background:#a9b6c9;cursor:not-allowed}
+
+  .summary{background:#f0f6ff;border:1px solid #cfe0ff;border-radius:10px;padding:14px;margin-bottom:14px}
+  .summary .row{display:flex;flex-wrap:wrap;gap:18px}
+  .summary .kpi{min-width:110px}
+  .summary .kpi .v{font-size:20px;font-weight:700;color:var(--up)}
+  .summary .kpi .k{font-size:12px;color:var(--sub)}
+  .summary .deadline{margin-top:10px;font-size:13px;color:var(--danger);font-weight:500}
+
+  .group-title{font-size:13px;font-weight:600;color:var(--sub);margin:16px 0 8px}
+  .empty{color:var(--sub);font-size:14px;text-align:center;padding:36px 12px}
+
+  .card{border:1px solid var(--line);border-left:4px solid var(--brand);border-radius:10px;
+        padding:14px;margin-bottom:12px;background:#fff}
+  .card.cond{border-left-color:var(--warn)}
+  .card.unv{border-left-color:var(--sub);background:#fafafa}
+  .card h3{font-size:15px;font-weight:600;margin-bottom:6px}
+  .amount{font-size:18px;color:var(--up);font-weight:700;margin:4px 0}
+  .amount.small{font-size:14px;font-weight:500}
+  .reason{font-size:13px;color:var(--sub);margin:6px 0}
+  .metas{font-size:12px;color:var(--sub);display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}
+  .metas b{color:var(--ink);font-weight:500}
+
+  .badges{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0}
+  .badge{font-size:11px;padding:2px 8px;border-radius:14px;cursor:help}
+  .badge.ok{background:var(--ok-bg);color:var(--ok)}
+  .badge.warn{background:var(--warn-bg);color:var(--warn)}
+  .badge.danger{background:var(--danger-bg);color:var(--danger)}
+
+  .win{font-size:12px;padding:3px 9px;border-radius:6px;display:inline-block;margin:4px 0}
+  .win.open{background:var(--danger-bg);color:var(--danger);font-weight:600}
+  .win.upcoming{background:var(--warn-bg);color:var(--warn)}
+  .win.rolling{background:var(--ok-bg);color:var(--ok)}
+  .win.closed{background:#f1efe8;color:#5f5e5a}
+
+  details{margin-top:10px;border-top:1px solid var(--line);padding-top:8px}
+  details summary{font-size:13px;color:var(--brand);cursor:pointer;font-weight:500}
+  details .body{font-size:13px;margin-top:8px}
+  details ol,details ul{margin:6px 0 6px 20px}
+  details li{margin-bottom:4px}
+  .src{font-size:12px;margin-top:8px;color:var(--sub)}
+  .src a{word-break:break-all}
+  .quote{font-size:12px;color:var(--sub);background:#f7f8fa;border-left:2px solid var(--line);
+         padding:6px 8px;margin-top:6px;border-radius:0 4px 4px 0}
+
+  .near{background:#fafafa;border:1px dashed var(--line);border-radius:10px;padding:12px;
+        font-size:13px;color:var(--sub);margin-top:14px}
+  .excl{background:var(--warn-bg);border:1px solid #f0d9a8;border-radius:10px;padding:12px;
+        font-size:12px;color:var(--warn);margin-top:14px}
+  .excl b{display:block;margin-bottom:4px}
+
+  .disclaimer{font-size:12px;color:var(--sub);background:#fff;border:1px dashed var(--line);
+              border-radius:10px;padding:12px;margin-top:14px}
+  footer{text-align:center;font-size:12px;color:var(--sub);padding:20px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>港澳台来深补贴与个税匹配器</h1>
+    <p>输入你的情况，匹配在深圳可申领的补贴与个税优惠，给出申请流程与截止提醒。每条结论都附官方一手来源。</p>
+    <div class="meta-bar">
+      <span id="dataVersion">数据加载中…</span>
+      <span id="dataCount"></span>
+    </div>
+  </header>
+
+  <div class="notice" id="globalNotice"></div>
+
+  <div class="layout">
+    <div class="panel">
+      <h2>你的情况</h2>
+      <p class="hint">不用注册，信息只在你的浏览器里计算，不会上传。</p>
+
+      <div class="examples" id="examples"></div>
+
+      <div class="field"><label>身份类型</label>
+        <select id="identity"></select></div>
+
+      <div class="field"><label>年龄</label>
+        <input id="age" type="number" value="28" min="16" max="80"></div>
+
+      <div class="field"><label>最高学历</label>
+        <select id="education">
+          <option value="associate">大专 / 副学士 / 高级文凭</option>
+          <option value="bachelor" selected>本科（学士）</option>
+          <option value="master">硕士</option>
+          <option value="doctor">博士</option>
+        </select></div>
+
+      <div class="field"><label>就业形态</label>
+        <select id="employment">
+          <option value="employed" selected>企业受雇</option>
+          <option value="flexible">灵活就业</option>
+          <option value="startup">创业自雇</option>
+          <option value="student">在校学生</option>
+          <option value="intern">实习</option>
+        </select></div>
+
+      <div class="field"><label>工作地区</label>
+        <select id="work_district"></select></div>
+
+      <div class="field"><label>在深居住地</label>
+        <select id="live_district"></select></div>
+
+      <div class="field"><label>常用通勤口岸</label>
+        <select id="port">
+          <option value="">不涉及跨境通勤</option>
+          <option value="futian">福田口岸</option>
+          <option value="huanggang">皇岗口岸</option>
+          <option value="luohu">罗湖口岸</option>
+          <option value="shenzhenbay">深圳湾口岸</option>
+          <option value="liantang">莲塘口岸</option>
+          <option value="shekou">蛇口码头</option>
+          <option value="other">其他</option>
+        </select></div>
+
+      <div class="field"><label>社保状态</label>
+        <select id="social_insurance">
+          <option value="qianhai_paid">已在前海参保</option>
+          <option value="shenzhen_paid" selected>已在深圳参保（非前海）</option>
+          <option value="flexible_paid">灵活就业参保</option>
+          <option value="none">未参保</option>
+        </select></div>
+
+      <div class="field"><label>毕业年限</label>
+        <select id="years_since_graduation">
+          <option value="0">应届 / 毕业不满 1 年</option>
+          <option value="1">毕业 1-2 年内</option>
+          <option value="3" selected>毕业 3-5 年内</option>
+          <option value="9">毕业超过 5 年</option>
+        </select></div>
+
+      <div class="field"><label>年收入（个税估算用）</label>
+        <select id="annual_income">
+          <option value="180000">24 万以下</option>
+          <option value="420000" selected>24-60 万</option>
+          <option value="900000">60-120 万</option>
+          <option value="1800000">120 万以上</option>
+        </select></div>
+
+      <div class="chk"><input type="checkbox" id="talent_recognized">
+        <label for="talent_recognized">已获高端 / 紧缺人才认定</label></div>
+      <div class="chk"><input type="checkbox" id="no_property" checked>
+        <label for="no_property">本人及配偶、未满 18 周岁子女在深无房</label></div>
+
+      <button class="btn" id="matchBtn" disabled>匹配我能拿的补贴</button>
+    </div>
+
+    <div class="panel">
+      <div id="results">
+        <div class="empty">填写左侧信息后点击匹配，也可以先点上面的示例快速试一下。</div>
+      </div>
+      <div class="disclaimer" id="disclaimer">
+        本工具为信息导航参考，<b>不构成申领承诺</b>。一切以官方最新文件与经办部门口径为准。
+        申报窗口逐年调整，请以当年最新指南为准。个税补贴金额为粗略估算，
+        未考虑专项附加扣除、年终奖单独计税等因素，实际以税务机关核算为准。
+        咨询电话 12333。
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    本站不收集任何个人信息，所有匹配计算在你的浏览器本地完成。
+  </footer>
+</div>
+
+<script src="src/matcher.js"></script>
+<script src="src/loader.js"></script>
+<script src="src/app.js"></script>
+</body>
+</html>

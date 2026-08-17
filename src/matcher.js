@@ -266,7 +266,14 @@ function collectExclusions(items) {
   return warns;
 }
 
-if (typeof module !== 'undefined') {
-  module.exports = { match, checkIdentity, checkConditions, resolveBenefit,
-                     windowStatus, stalenessCheck, estimateTaxRebate };
-}
+// 双环境导出：Node（CI 测试用 require）与浏览器（挂到 window）都能用。
+// 刻意不引入打包工具——这个项目的复杂度不值得为它加一层构建步骤。
+(function (root) {
+  const api = { match, checkIdentity, checkConditions, resolveBenefit,
+                windowStatus, stalenessCheck, estimateTaxRebate };
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = api;
+  } else {
+    root.PolicyMatcher = api;
+  }
+})(typeof self !== 'undefined' ? self : this);

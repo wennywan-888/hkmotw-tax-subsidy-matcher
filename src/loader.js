@@ -186,6 +186,76 @@ function badgesFor(policy) {
   return badges;
 }
 
-if (typeof module !== 'undefined') {
-  module.exports = { loadPolicies, validateShape, annotateStaleness, badgesFor };
+/**
+ * 浏览器端异步加载
+ *
+ * 与 loadPolicies 的区别：网络请求必须异步，且要区分「网络失败」和「数据格式错」——
+ * 前者用户重刷可能就好了，后者是我们的 bug，提示措辞不同。
+ *
+ * @param {Object} opts { primary, fallbacks, today, fetchImpl }
+ *   fetchImpl 允许注入 fetch，便于在测试环境替换（浏览器里留空即用全局 fetch）
+ */
+async function loadPoliciesAsync(opts = {}) {
+  const primary = opts.primary || 'data/policies.json';
+  const fallbacks = opts.fallbacks || [];
+  const today = opts.today || new Date();
+  const doFetch = opts.fetchImpl ||
+    (typeof fetch !== 'undefined' ? fetch : null);
+
+  if (!doFetch) {
+    return {
+      ok: false, data: null, source: null, degraded: true,
+      errors: ['当前环境不支持 fetch'],
+      message: '浏览器版本过旧，无法加载数据。请更新浏览器或访问官网查询。',
+    };
+  }
+
+  async function grab(url) {
+    const res = await doFetch(url, { cache: 'no-cache' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json();
+  }
+
+  let firstErr = null;
+  try {
+    const raw = await grab(primary);
+    const errs = validateShape(raw);
+    if (errs.length === 0) {
+      return { ok: true, data: annotateStaleness(raw, today), source: primary,
+               degraded: false, errors: [], message: '' };
+    }
+    firstErr = `数据结构校验失败：${errs.slice(0, 5).join('；')}`;
+  } catch (e) {
+    firstErr = e.message || String(e);
+  }
+
+  for (const url of fallbacks) {
+    try {
+      const bak = await grab(url);
+      if (validateShape(bak).length === 0) {
+        return {
+          ok: true, data: annotateStaleness(bak, today), source: url,
+          degraded: true, errors: [firstErr],
+          message: '当前政策数据异常，已自动加载备份版本。数据可能不是最新，我们正在修复。',
+        };
+      }
+    } catch (_) { /* 继续试下一个 */ }
+  }
+
+  return {
+    ok: false, data: null, source: null, degraded: true,
+    errors: [firstErr].filter(Boolean),
+    message: '政策数据暂时无法加载，我们正在修复。' +
+             '在此期间请直接查阅深圳市人力资源和社会保障局官网（hrss.sz.gov.cn），或致电 12333 咨询。',
+  };
 }
+
+(function (root) {
+  const api = { loadPolicies, loadPoliciesAsync, validateShape,
+                annotateStaleness, badgesFor };
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = api;
+  } else {
+    root.PolicyLoader = api;
+  }
+})(typeof self !== 'undefined' ? self : this);

@@ -1,0 +1,104 @@
+name: 部署到 Pages
+
+# 推到 main 就自动部署。部署前先跑数据校验——
+# 政策数据坏了宁可不部署，也不要把错误信息推给用户。
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同时只跑一个部署，但不取消进行中的（避免部署到一半被打断）
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # 部署前守门：数据坏了直接失败，不上线
+      - name: 数据校验
+        run: |
+          node - <<'JS'
+          const fs = require('fs');
+          const { loadPolicies } = require('./src/loader.js');
+          const { match } = require('./src/matcher.js');
+          const rd = p => JSON.parse(fs.readFileSync(p, 'utf8'));
+
+          const r = loadPolicies(rd, { primary: 'data/policies.json' });
+          if (!r.ok) {
+            console.error('::error::政策数据无法加载，中止部署');
+            process.exit(1);
+          }
+          if (r.degraded) {
+            console.error('::error::政策数据结构异常，中止部署');
+            process.exit(1);
+          }
+
+          // 四类身份都必须能匹配到政策
+          const ids = ['hk_permanent', 'hk_non_permanent', 'mo_permanent', 'tw_resident'];
+          for (const id of ids) {
+            const m = match(r.data, {
+              identity: id, age: 30, education: 'bachelor', employment: 'employed',
+              work_district: 'futian', social_insurance: 'shenzhen_paid',
+              nationality_cn: true, has_property_in_sz: false,
+              talent_recognized: false, years_since_graduation: 3,
+            });
+            const n = m.summary.count_strong + m.summary.count_conditional
+                    + m.summary.count_unverified;
+            if (n === 0) {
+              console.error(`::error::${id} 匹配不到任何政策，中止部署`);
+              process.exit(1);
+            }
+          }
+          console.log(`校验通过：${r.data.policies.length} 条政策，` +
+                      `v${r.data.meta.data_version}`);
+          JS
+
+      # 只把前台需要的文件放进产物，不带 tools/ reports/ docs/
+      - name: 组装静态站点
+        run: |
+          mkdir -p _site/src _site/data
+          cp index.html _site/
+          cp src/matcher.js src/loader.js src/app.js _site/src/
+          cp data/policies.json _site/data/
+          # 关掉 Jekyll 处理，避免下划线开头的文件被忽略
+          touch _site/.nojekyll
+          echo "站点文件："
+          find _site -type f | sort
+          echo "总大小：$(du -sh _site | cut -f1)"
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: 输出访问地址
+        run: |
+          echo "## 部署完成" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "访问地址：${{ steps.deployment.outputs.page_url }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "**验收：用手机关掉 WiFi、用流量打开这个地址，确认能正常匹配。**" >> "$GITHUB_STEP_SUMMARY"
