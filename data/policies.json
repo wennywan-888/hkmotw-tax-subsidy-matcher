@@ -1,0 +1,1835 @@
+{
+  "meta": {
+    "data_version": "1.0.0",
+    "data_as_of": "2026-08-17",
+    "last_full_review": "2026-08-17",
+    "changelog_ref": "data/CHANGELOG.md",
+    "stale_threshold_days": 180,
+    "scope_note": "面向来深圳工作的中国香港、中国澳门、中国台湾居民。不含外籍人士与海外华侨。"
+  },
+
+  "identity_types": [
+    { "key": "hk_permanent",     "label": "中国香港永久性居民", "id_doc": "永久性居民身份证 + 港澳居民来往内地通行证" },
+    { "key": "hk_non_permanent", "label": "中国香港居民（优才/专业人士/企业家入境计划）", "id_doc": "香港居民身份证 + 香港入境事务处签发入境证件" },
+    { "key": "mo_permanent",     "label": "中国澳门永久性居民", "id_doc": "永久性居民身份证 + 港澳居民来往内地通行证" },
+    { "key": "tw_resident",      "label": "中国台湾居民", "id_doc": "台湾居民来往大陆通行证 / 台湾居民居住证" }
+  ],
+
+  "districts": [
+    { "key": "qianhai", "label": "前海合作区", "note": "行政上跨南山、宝安" },
+    { "key": "nanshan", "label": "南山区" },
+    { "key": "futian",  "label": "福田区" },
+    { "key": "luohu",   "label": "罗湖区" },
+    { "key": "yantian", "label": "盐田区" },
+    { "key": "baoan",   "label": "宝安区" },
+    { "key": "longgang","label": "龙岗区" },
+    { "key": "longhua", "label": "龙华区" },
+    { "key": "pingshan","label": "坪山区" },
+    { "key": "guangming","label": "光明区" },
+    { "key": "dapeng",  "label": "大鹏新区" },
+    { "key": "shenshan","label": "深汕特别合作区" },
+    { "key": "hetao",   "label": "河套深港科技创新合作区" }
+  ],
+
+  "policies": [
+
+    {
+      "id": "qh-employ-001",
+      "name": "前海十二条 · 就业补贴",
+      "full_name": "支持港澳青年实习就业（就业补贴）",
+      "issuing_authority": "深圳市前海深港现代服务业合作区管理局",
+      "doc_number": "深前海规〔2024〕12号",
+      "doc_title": "深圳市前海深港现代服务业合作区管理局关于支持港澳青年在前海就业创业发展的十二条措施",
+      "level": "zone",
+      "clause_ref": "第1条 就业补贴",
+      "eligible_identities": {
+        "hk_permanent":     { "applicable": true,  "note": "" },
+        "hk_non_permanent": { "applicable": true,  "note": "须为在香港定居且已不具有内地户籍的中国公民" },
+        "mo_permanent":     { "applicable": true,  "note": "" },
+        "tw_resident":      { "applicable": true,  "note": "申报指南明确：在前海合作区就业创业的台湾青年参照《十二条措施》执行" }
+      },
+      "conditions": {
+        "age_max": 45,
+        "nationality_cn_required": true,
+        "education_min": "associate",
+        "employment_types": ["employed"],
+        "work_districts": ["qianhai"],
+        "social_insurance": ["qianhai_paid"],
+        "first_employment_after": "2021-07-01",
+        "labor_contract_min_years": 1,
+        "extra": [
+          { "key": "social_insurance_location", "value": "qianhai", "desc": "申请时社保关系须在前海合作区" },
+          { "key": "education_note", "value": "associate_incl_hk_mo", "desc": "大学专科以上，含港澳副学士或高级文凭" }
+        ]
+      },
+      "benefit": {
+        "type": "monthly",
+        "calc_mode": "by_education",
+        "amounts": { "doctor": 8000, "master": 4000, "bachelor": 3000, "associate": 2000 },
+        "unit": "CNY/月",
+        "cap_total": null,
+        "duration_desc": "补贴期限累计不超过3年（新旧措施合并计算）",
+        "duration_months_max": 36,
+        "district_overrides": {},
+        "year_history": [
+          { "year": 2025, "support_period": "2024-07-01 至 2025-06-30",
+            "amounts": { "doctor": 8000, "master": 4000, "bachelor": 3000, "associate": 2000 } }
+        ]
+      },
+      "application_window": {
+        "window_type": "annual_batch",
+        "start": "2025-08-01",
+        "end": "2025-08-14",
+        "actual_end_extended": "2025-08-18",
+        "next_expected": "每年8月前后，逐年公布申报指南",
+        "note": "2025年度原定8月14日截止，实际受理至8月18日"
+      },
+      "application": {
+        "channel_name": "前海企业服务一体化平台",
+        "channel_url": "https://qhsk.sz.gov.cn",
+        "submit_via": "employer",
+        "materials": [
+          "港澳青年在前海就业创业资金申请表及承诺书（个人类）（需单位盖章）",
+          "身份证明：港澳青年提供港澳居民来往内地通行证正反面；台湾青年提供台湾居民来往大陆通行证正反面",
+          "与前海合作区用人单位签订的劳动合同扫描件",
+          "入职以来至申请当月的个人所得税纳税证明（须覆盖拟申请扶持期间）",
+          "高校毕业证扫描件 + 学历认证文件（内地高校：学历证书电子注册备案表；境外高校：教育部留学服务中心认证书）"
+        ],
+        "steps": [
+          { "step": 1, "action": "登录前海企业服务一体化平台，由「领补贴」进入「港澳青年」资金申报专区", "duration": "" },
+          { "step": 2, "action": "个人类资助须通过所在单位提交申请", "duration": "受理期内" },
+          { "step": 3, "action": "前海管理局初审，材料不齐予以退回", "duration": "退回后须5个工作日内一次性补正" },
+          { "step": 4, "action": "受理审核", "duration": "" },
+          { "step": 5, "action": "前海管理局官网公示", "duration": "5个工作日" },
+          { "step": 6, "action": "提交请款材料后拨付，直接到个人账户", "duration": "" }
+        ],
+        "processing_time": "初审 → 补正(5工作日) → 审核 → 公示(5工作日) → 拨付",
+        "contact_phone": ["0755-88105454", "0755-33300852", "0755-26408923", "0755-88105242"],
+        "tax_note": "由前海管理局按「偶然所得」项目代扣代缴个人所得税"
+      },
+      "sources": [
+        {
+          "title": "《十二条措施》2025年度个人类补贴申报指南",
+          "url": "https://qh.sz.gov.cn/gkmlpt/content/12/12304/post_12304451.html",
+          "publisher": "深圳市前海管理局",
+          "published_date": "2025-07-31",
+          "quote": "申请《十二条措施》支持的港澳青年，应当是45周岁以下、具有中国国籍的港澳居民……3.与前海合作区用人单位签订一年以上劳动合同，且申请时社保关系在前海合作区。在前海合作区就业创业的台湾青年参照《十二条措施》执行。",
+          "is_primary": true
+        },
+        {
+          "title": "深i企人才政策宣传特辑（前海篇）",
+          "url": "https://www.dutenews.com/cmdetail/637062",
+          "publisher": "深圳市中小企业服务局指导 / 深i企平台",
+          "published_date": "2025-04-09",
+          "quote": "按照博士8000元/月、硕士4000元/月、学士3000元/月、副学士或者高级文凭2000元/月的标准给予就业补贴。",
+          "is_primary": false
+        }
+      ],
+      "verification": {
+        "status": "verified",
+        "last_verified": "2026-08-17",
+        "verified_by": "前海管理局官网申报指南原文 + 深i企政策汇编",
+        "pending_items": [
+          "补贴标准的分档金额来自深i企政策汇编转载，建议另行核对深前海规〔2024〕12号原文PDF以确认"
+        ],
+        "notes": "重要更正：原型此前写作「每月应税工资20%，最高8000元/月」，与官方按学历定额标准不符，已按官方口径更正。"
+      },
+      "validity": {
+        "effective_from": "2024-07-01",
+        "effective_until": "2027-06-30",
+        "supersedes": ["深前海规〔2023〕7号"],
+        "superseded_by": null
+      },
+      "exclusions": {
+        "cannot_combine_with": ["sz-*", "nanshan-*", "baoan-*"],
+        "note": "同时符合《十二条措施》及深圳市、南山区、宝安区、前海合作区其他同类性质支持政策规定的，不重复享受。已按深前海规〔2019〕7号领取创业启动、租房资助、交通资助的，不再申请本措施奖补。"
+      }
+    },
+
+    {
+      "id": "qh-live-002",
+      "name": "前海十二条 · 居住补贴",
+      "full_name": "支持港澳青年居住生活（居住补贴）",
+      "issuing_authority": "深圳市前海深港现代服务业合作区管理局",
+      "doc_number": "深前海规〔2024〕12号",
+      "doc_title": "深圳市前海深港现代服务业合作区管理局关于支持港澳青年在前海就业创业发展的十二条措施",
+      "level": "zone",
+      "clause_ref": "第10条 居住补贴",
+      "eligible_identities": {
+        "hk_permanent":     { "applicable": true, "note": "" },
+        "hk_non_permanent": { "applicable": true, "note": "" },
+        "mo_permanent":     { "applicable": true, "note": "" },
+        "tw_resident":      { "applicable": true, "note": "台湾青年参照执行" }
+      },
+      "conditions": {
+        "age_max": 45,
+        "nationality_cn_required": true,
+        "employment_types": ["employed", "startup"],
+        "work_districts": ["qianhai"],
+        "first_employment_after": "2021-07-01",
+        "no_property_in_sz": true,
+        "extra": [
+          { "key": "no_property_scope", "value": "self_spouse_minor_children",
+            "desc": "本人及其配偶、未满十八周岁子女均未在深圳市拥有自有住房" },
+          { "key": "no_other_housing_benefit", "value": true,
+            "desc": "未正在享受深圳市高层次人才购房补贴、奖励补贴、住房保障优惠政策或前海合作区居住保障服务" }
+        ]
+      },
+      "benefit": {
+        "type": "monthly",
+        "calc_mode": "fixed",
+        "amounts": { "default": 1000 },
+        "unit": "CNY/月",
+        "duration_desc": "补贴期限累计不超过3年",
+        "duration_months_max": 36,
+        "district_overrides": {},
+        "year_history": [
+          { "year": 2025, "support_period": "2024-07-01 至 2025-06-30", "amounts": { "default": 1000 } }
+        ]
+      },
+      "application_window": {
+        "window_type": "annual_batch",
+        "start": "2025-08-01",
+        "end": "2025-08-14",
+        "actual_end_extended": "2025-08-18",
+        "next_expected": "每年8月前后，随个人类补贴一并受理",
+        "note": ""
+      },
+      "application": {
+        "channel_name": "前海企业服务一体化平台",
+        "channel_url": "https://qhsk.sz.gov.cn",
+        "submit_via": "employer",
+        "materials": [
+          "港澳青年在前海就业创业资金申请表及承诺书（个人类）",
+          "身份证明扫描件",
+          "申请主体及其配偶、未满十八周岁子女无房产证明"
+        ],
+        "steps": [
+          { "step": 1, "action": "先到深圳市不动产登记中心开具无房产证明", "duration": "" },
+          { "step": 2, "action": "随个人类补贴一并通过所在单位在平台提交", "duration": "受理期内" }
+        ],
+        "processing_time": "同就业补贴",
+        "contact_phone": ["0755-88105454", "0755-33300852"]
+      },
+      "sources": [
+        {
+          "title": "《十二条措施》2025年度个人类补贴申报指南",
+          "url": "https://qh.sz.gov.cn/gkmlpt/content/12/12304/post_12304451.html",
+          "publisher": "深圳市前海管理局",
+          "published_date": "2025-07-31",
+          "quote": "第1条就业补贴、第10条居住补贴、第11条生活补贴扶持区间为2024年7月1日至2025年6月30日。申请主体及其配偶、未满十八周岁子女无房产证明*注：申请居住补贴的港澳青年需提供此项材料。",
+          "is_primary": true
+        },
+        {
+          "title": "深i企人才政策宣传特辑（前海篇）",
+          "url": "https://www.dutenews.com/cmdetail/637062",
+          "publisher": "深i企平台",
+          "published_date": "2025-04-09",
+          "quote": "对2021年7月1日后首次就业创业的港澳青年，本人及其配偶、未满十八周岁的子女均未在深圳市拥有自有住房……按照1000元/月给予居住补贴，补贴期限累计不超过3年。",
+          "is_primary": false
+        }
+      ],
+      "verification": {
+        "status": "verified",
+        "last_verified": "2026-08-17",
+        "verified_by": "前海管理局官网申报指南原文",
+        "pending_items": [],
+        "notes": ""
+      },
+      "validity": {
+        "effective_from": "2024-07-01",
+        "effective_until": "2027-06-30",
+        "supersedes": [],
+        "superseded_by": null
+      },
+      "exclusions": {
+        "cannot_combine_with": ["sz-housing-*"],
+        "note": "与深圳市住房保障优惠政策、前海合作区居住保障服务互斥"
+      }
+    },
+
+    {
+      "id": "qh-live-003",
+      "name": "前海十二条 · 生活补贴",
+      "full_name": "支持港澳青年居住生活（生活补贴）",
+      "issuing_authority": "深圳市前海深港现代服务业合作区管理局",
+      "doc_number": "深前海规〔2024〕12号",
+      "doc_title": "深圳市前海深港现代服务业合作区管理局关于支持港澳青年在前海就业创业发展的十二条措施",
+      "level": "zone",
+      "clause_ref": "第11条 生活补贴",
+      "eligible_identities": {
+        "hk_permanent":     { "applicable": true, "note": "" },
+        "hk_non_permanent": { "applicable": true, "note": "" },
+        "mo_permanent":     { "applicable": true, "note": "" },
+        "tw_resident":      { "applicable": true, "note": "台湾青年参照执行" }
+      },
+      "conditions": {
+        "age_max": 45,
+        "nationality_cn_required": true,
+        "employment_types": ["employed", "startup"],
+        "work_districts": ["qianhai"],
+        "first_employment_after": "2021-07-01",
+        "extra": []
+      },
+      "benefit": {
+        "type": "monthly",
+        "calc_mode": "fixed",
+        "amounts": { "default": 2000 },
+        "unit": "CNY/月",
+        "duration_desc": "补贴期限累计不超过3年",
+        "duration_months_max": 36,
+        "district_overrides": {},
+        "year_history": [
+          { "year": 2025, "support_period": "2024-07-01 至 2025-06-30", "amounts": { "default": 2000 } }
+        ]
+      },
+      "application_window": {
+        "window_type": "annual_batch",
+        "start": "2025-08-01",
+        "end": "2025-08-14",
+        "actual_end_extended": "2025-08-18",
+        "next_expected": "每年8月前后，随个人类补贴一并受理",
+        "note": ""
+      },
+      "application": {
+        "channel_name": "前海企业服务一体化平台",
+        "channel_url": "https://qhsk.sz.gov.cn",
+        "submit_via": "employer",
+        "materials": ["港澳青年在前海就业创业资金申请表及承诺书（个人类）", "身份证明扫描件"],
+        "steps": [
+          { "step": 1, "action": "随个人类补贴一并通过所在单位在平台提交", "duration": "受理期内" }
+        ],
+        "processing_time": "同就业补贴",
+        "contact_phone": ["0755-88105454", "0755-33300852"]
+      },
+      "sources": [
+        {
+          "title": "《十二条措施》2025年度个人类补贴申报指南",
+          "url": "https://qh.sz.gov.cn/gkmlpt/content/12/12304/post_12304451.html",
+          "publisher": "深圳市前海管理局",
+          "published_date": "2025-07-31",
+          "quote": "第1条就业补贴、第10条居住补贴、第11条生活补贴扶持区间为2024年7月1日至2025年6月30日。",
+          "is_primary": true
+        },
+        {
+          "title": "深i企人才政策宣传特辑（前海篇）",
+          "url": "https://www.dutenews.com/cmdetail/637062",
+          "publisher": "深i企平台",
+          "published_date": "2025-04-09",
+          "quote": "对2021年7月1日后首次就业创业的港澳青年，按照2000元/月给予生活补贴，补贴期限累计不超过3年。",
+          "is_primary": false
+        }
+      ],
+      "verification": {
+        "status": "verified",
+        "last_verified": "2026-08-17",
+        "verified_by": "前海管理局官网申报指南原文",
+        "pending_items": [],
+        "notes": "符合深圳市新引进博士人才生活补贴及大湾区青年就业计划生活补助条件的，按有关规定另行申请"
+      },
+      "validity": {
+        "effective_from": "2024-07-01",
+        "effective_until": "2027-06-30",
+        "supersedes": ["深前海规〔2023〕7号"],
+        "superseded_by": null
+      },
+      "exclusions": { "cannot_combine_with": [], "note": "" }
+    },
+
+    {
+      "id": "gba-tax-004",
+      "name": "大湾区境外高端/紧缺人才个税财政补贴",
+      "full_name": "深圳市粤港澳大湾区个人所得税优惠政策财政补贴",
+      "issuing_authority": "深圳市财政局、深圳市人力资源和社会保障局、深圳市科技创新局、国家税务总局深圳市税务局",
+      "doc_number": "深财法〔2026〕1号",
+      "doc_title": "深圳市粤港澳大湾区个人所得税优惠政策财政补贴申报指南（2026年）",
+      "level": "municipal",
+      "clause_ref": "全文",
+      "eligible_identities": {
+        "hk_permanent":     { "applicable": true, "note": "提交永久性港澳居民身份证 + 港澳居民来往内地通行证" },
+        "hk_non_permanent": { "applicable": true, "note": "限取得香港入境计划（优才、专业人士及企业家）的香港居民" },
+        "mo_permanent":     { "applicable": true, "note": "" },
+        "tw_resident":      { "applicable": true, "note": "指南明确列入「台湾地区居民」，提交台湾居民来往大陆通行证" }
+      },
+      "conditions": {
+        "age_max": null,
+        "employment_types": ["employed", "flexible"],
+        "work_districts": [],
+        "talent_recognition_required": true,
+        "extra": [
+          { "key": "no_mainland_identity", "value": true,
+            "desc": "若同时具有境内身份，不符合身份条件（取得国外长期居留权的留学回国人员和海外华侨除外）" },
+          { "key": "work_field", "value": "sci_tech_or_key_industry",
+            "desc": "须在深圳市科技创新、重点发展产业或哲学社会科学领域工作" },
+          { "key": "days_in_sz_min", "value": 90,
+            "desc": "纳税年度内在深圳市工作累计满90天以上（不含90天），不足24小时按半天计" },
+          { "key": "contract_required", "value": true,
+            "desc": "与在深圳市注册的企业和其他机构签订劳动合同、派遣合同或劳务合同" },
+          { "key": "talent_catalog", "value": "high_end_or_scarce",
+            "desc": "须符合《高端人才指导目录》或《紧缺人才指导目录》标准" },
+          { "key": "credit_check", "value": true, "desc": "申请时未被列入严重失信主体名单" }
+        ]
+      },
+      "benefit": {
+        "type": "tax_rebate",
+        "calc_mode": "formula",
+        "formula": "补贴额 = 在深已缴个人所得税额 - 应纳税所得额 × 15%",
+        "amounts": { "default": null },
+        "unit": "CNY/纳税年度",
+        "cap_total": 5000000,
+        "duration_desc": "按纳税年度逐年申请",
+        "duration_months_max": null,
+        "tax_free": true,
+        "deduction_rule": "纳税年度领取过深圳市、各区高层次人才奖励补贴，鹏城孔雀计划特聘岗位奖励，市级全球人才汇聚、特聘岗位、培养支持项目奖励等，实际补贴额需扣减已发放金额",
+        "district_overrides": {},
+        "year_history": [
+          { "year": 2026, "tax_year": 2025, "note": "同时受理2024纳税年度补办申请" }
+        ]
+      },
+      "application_window": {
+        "window_type": "annual_batch",
+        "start": "2026-01-01",
+        "end": "2026-03-31",
+        "next_expected": "每年1月1日至3月31日，受理上一纳税年度",
+        "note": "重要：须先完成上一年度个人所得税综合所得汇算清缴，再申请本补贴"
+      },
+      "application": {
+        "channel_name": "广东省政务服务网（搜索「深圳市境外高端人才和紧缺人才个人所得税财政补贴」）",
+        "channel_url": "https://www.gdzwfw.gov.cn/",
+        "submit_via": "employer",
+        "materials": [
+          "有效身份证明证件（港澳：永久性居民身份证+来往内地通行证；台湾：台湾居民来往大陆通行证；香港入境计划：香港居民身份证+入境证件）",
+          "人才资质材料（高端人才：认定证书/聘书/确认函；紧缺人才：工作单位岗位说明）",
+          "与单位签订的劳动、派遣或劳务合同",
+          "本人在中国内地开设并已激活的I类银行结算账户资料",
+          "申请人承诺书（在深工作满90天以上等）",
+          "单位属性、主营业务及申请人从事岗位说明书",
+          "已获人才工程或项目奖励、补贴的相关材料"
+        ],
+        "steps": [
+          { "step": 1, "action": "在广东省统一身份认证平台 tyrz.gd.gov.cn 注册并实名验证", "duration": "" },
+          { "step": 2, "action": "先完成上一纳税年度个人所得税综合所得汇算清缴", "duration": "汇算清缴期3月1日-6月30日，但补贴申报3月31日截止" },
+          { "step": 3, "action": "在广东省政务服务网提出补贴申请并提交材料，转所在单位审核", "duration": "1月1日-3月31日" },
+          { "step": 4, "action": "单位审核后在申报系统提交", "duration": "3月31日前" },
+          { "step": 5, "action": "受理机关作出受理决定", "duration": "5个工作日" },
+          { "step": 6, "action": "初步审核 → 集中审核", "duration": "" },
+          { "step": 7, "action": "登录申报系统获取年度纳税数据并确认；可在自然人电子税务局「特色应用-粤港澳大湾区个税优惠」查询并授权发送", "duration": "5个工作日内" },
+          { "step": 8, "action": "补贴核算 → 通过财政国库集中支付系统拨付至个人账户", "duration": "" }
+        ],
+        "processing_time": "受理5工作日 → 初审 → 集中审核 → 纳税数据确认5工作日 → 核算 → 拨付",
+        "contact_phone": [
+          "福田区人力资源局 0755-82918537",
+          "罗湖区人力资源局 0755-25434833",
+          "盐田区人力资源局 0755-25351655",
+          "南山区人力资源局 0755-86628407",
+          "宝安区人力资源局 0755-27664525",
+          "龙岗区人力资源局 0755-28933851",
+          "龙华区人力资源局 0755-23336194",
+          "坪山区人力资源局 0755-85209437",
+          "光明区人力资源局 0755-88211317",
+          "大鹏新区组织人事局 0755-88158769",
+          "深汕特别合作区组织人事局 0755-22100560",
+          "前海国际人才服务中心 0755-88981800"
+        ],
+        "handling_note": "由各区人力资源部门按辖区办理"
+      },
+      "sources": [
+        {
+          "title": "关于印发《深圳市粤港澳大湾区个人所得税优惠政策财政补贴申报指南（2026年）》的通知",
+          "url": "https://szfb.sz.gov.cn/gkmlpt/content/12/12581/post_12581711.html",
+          "publisher": "深圳市财政局",
+          "published_date": "2026-01-06",
+          "quote": "在深圳市行政区域范围内工作、符合条件的境外人才（含高端人才、紧缺人才），可对其2025纳税年度在深圳市缴纳的个人所得税已缴税额超过按应纳税所得额15%计算的税额部分申请财政补贴。该补贴免征个人所得税。每个纳税年度每个纳税人的个人所得税财政补贴额最高不超过500万元。……四、申报时间 2026年1月1日至2026年3月31日",
+          "is_primary": true
+        },
+        {
+          "title": "支持港澳青年在粤港澳大湾区就业创业的实施细则 第十条",
+          "url": "https://hrss.gd.gov.cn/zdlyxx/zxzy/content/post_4843134.html",
+          "publisher": "广东省人力资源和社会保障厅",
+          "published_date": "2025-11-18",
+          "quote": "对在大湾区工作的符合高端人才和紧缺人才条件的港澳青年，其在珠三角九市缴纳的个人所得税已缴税额超过其按应纳税所得额的15%计算的税额部分，按照粤港澳大湾区个人所得税优惠政策相关文件规定给予财政补贴。",
+          "is_primary": true
+        }
+      ],
+      "verification": {
+        "status": "verified",
+        "last_verified": "2026-08-17",
+        "verified_by": "深圳市财政局官网 深财法〔2026〕1号 全文",
+        "pending_items": [],
+        "notes": "重要更正：原型标注申报窗口为「次年年中受理」，与2026年指南「1月1日至3月31日」不符，已更正。原型引用的深财法〔2025〕20号已被本文件替代。"
+      },
+      "validity": {
+        "effective_from": "2026-01-01",
+        "effective_until": "2026-12-31",
+        "supersedes": ["深财法〔2025〕20号"],
+        "superseded_by": null,
+        "upstream_policy": "财税〔2023〕34号（延续实施粤港澳大湾区个人所得税优惠政策）、粤财税〔2023〕21号",
+        "note": "申报指南按年度更新，有效期1年"
+      },
+      "exclusions": {
+        "cannot_combine_with": ["qianhai-tax-*", "hetao-tax-*"],
+        "note": "同时符合粤港澳大湾区、前海深港现代服务业合作区、河套深港科技创新合作区深圳园区个人所得税优惠政策的，可自行选择享受其中一项，不得同时享受多项"
+      }
+    },
+
+    {
+      "id": "sz-social-005",
+      "name": "灵活就业社保补贴",
+      "full_name": "港澳台籍高校毕业生灵活就业社会保险补贴",
+      "issuing_authority": "深圳市人力资源和社会保障局",
+      "doc_number": "深府办规〔2023〕7号",
+      "doc_title": "深圳市人民政府办公厅关于优化调整稳就业政策措施全力促发展惠民生的通知 / 港澳青年就业创业补贴申请办理指导清单",
+      "level": "municipal",
+      "clause_ref": "灵活就业社保补贴",
+      "eligible_identities": {
+        "hk_permanent":     { "applicable": true, "note": "" },
+        "hk_non_permanent": { "applicable": true, "note": "" },
+        "mo_permanent":     { "applicable": true, "note": "" },
+        "tw_resident":      { "applicable": true, "note": "依深人社函〔2026〕8号，在深就业创业的台湾青年同等适用深人社规〔2023〕3号" }
+      },
+      "conditions": {
+        "graduate_within_years": 2,
+        "employment_types": ["flexible"],
+        "work_districts": [],
+        "social_insurance": ["flexible_paid"],
+        "extra": [
+          { "key": "social_months_min", "value": 3,
+            "desc": "以灵活就业身份参加企业职工养老保险、职工医疗保险连续正常缴纳满3个月以上" },
+          { "key": "weekly_hours_min", "value": 20, "desc": "每周工作时间累计不低于20小时" },
+          { "key": "eligible_jobs", "value": "specified_list",
+            "desc": "须在指定灵活就业岗位工作：家政/病人看护/老人护理、餐饮服务、社区保洁保绿、社区来料加工/工艺作坊/再生资源回收、依托互联网服务平台等新业态新模式" }
+        ]
+      },
+      "benefit": {
+        "type": "monthly",
+        "calc_mode": "formula",
+        "formula": "min(本人实际社保缴费额 × 2/3, 600)",
+        "amounts": { "default": 600 },
+        "unit": "CNY/月（上限）",
+        "duration_desc": "累计最长不超过3年",
+        "duration_months_max": 36,
+        "district_overrides": {},
+        "year_history": [],
+        "provincial_baseline": { "amount": 300, "note": "省标准为每人每月300元，深圳提高至不超过600元" }
+      },
+      "application_window": {
+        "window_type": "rolling",
+        "start": null,
+        "end": null,
+        "next_expected": "常态受理",
+        "note": "须在满足连续缴满3个月之日起6个月内提出首次申请，首次补贴发放月份最长可追溯6个月；此后每满3个月申请一次"
+      },
+      "application": {
+        "channel_name": "广东省政务服务网 / 深圳公共就业服务系统（区或街道公共就业服务机构）",
+        "channel_url": "https://hrsspub.sz.gov.cn/ggjyfw/",
+        "submit_via": "self",
+        "materials": [
+          "港澳居民来往内地通行证或港澳居民居住证（正反面）；台湾居民提供台湾居民来往大陆通行证或台湾居民居住证",
+          "《教育部学历证书电子注册备案表》（有效期须选180天以上）、《中国高等教育学历认证报告》或教育部留学服务中心《国外学历学位认证书》",
+          "拟申领补贴月份的灵活就业辅证材料（临时雇佣协议、加工订单、互联网平台服务截图及工作场景相片等，每期申请时提供）"
+        ],
+        "steps": [
+          { "step": 1, "action": "办理灵活就业登记，并以灵活就业身份参保", "duration": "" },
+          { "step": 2, "action": "连续正常缴纳满3个月后，向户籍地或经常居住地所在区/街道公共就业服务机构提出首次申请", "duration": "满3个月之日起6个月内" },
+          { "step": 3, "action": "自首次申请之日起每满3个月报告灵活就业状况并申请已缴社保费补贴", "duration": "每3个月一次" }
+        ],
+        "processing_time": "",
+        "contact_phone": ["12333"],
+        "termination_rules": "出现以下情形终止发放：已正规就业 / 连续3个月未以个人身份缴纳社保 / 未申请补贴超过6个月"
+      },
+      "sources": [
+        {
+          "title": "深圳市人社局 港澳就业创业专题 · 灵活就业社保补贴",
+          "url": "https://hrss.sz.gov.cn/ztfw/gaojyzt/index.html",
+          "publisher": "深圳市人力资源和社会保障局",
+          "published_date": "2026-08-17",
+          "quote": "每月按本人实际缴费额三分之二且不超过600元的标准给予社保补贴；累计最长不超过3年。补贴对象应在满足连续正常缴纳社会保险费满3个月之日起6个月内，向户籍地或经常居住地所在区或街道公共就业服务机构提出首次补贴申请。",
+          "is_primary": true
+        },
+        {
+          "title": "支持港澳青年在粤港澳大湾区就业创业的实施细则 第六条",
+          "url": "https://hrss.gd.gov.cn/zdlyxx/zxzy/content/post_4843134.html",
+          "publisher": "广东省人力资源和社会保障厅",
+          "published_date": "2025-11-18",
+          "quote": "毕业2年内的港澳籍高校毕业生，办理灵活就业登记并以灵活就业身份参加社会保险的，可申请享受灵活就业社保补贴。补贴标准为每人每月300元，有条件的地市可适当提高，但不超过本人实际社保缴费额的2/3，最长不超过3年。",
+          "is_primary": true
+        }
+      ],
+      "verification": {
+        "status": "verified",
+        "last_verified": "2026-08-17",
+        "verified_by": "深圳市人社局港澳就业创业专题官方专区 + 省厅细则原文",
+        "pending_items": [],
+        "notes": "深圳标准（不超600元）高于省标准（300元），符合省细则「有条件的地市可适当提高」规定"
+      },
+      "validity": {
+        "effective_from": "2023-01-01",
+        "effective_until": null,
+        "supersedes": [],
+        "superseded_by": null
+      },
+      "exclusions": { "cannot_combine_with": [], "note": "" }
+    },
+
+    {
+      "id": "sz-social-006",
+      "name": "小微企业社保补贴（单位申领）",
+      "full_name": "小微企业招用港澳台籍高校毕业生社会保险补贴",
+      "issuing_authority": "广东省人力资源和社会保障厅",
+      "doc_number": "粤人社规〔2025〕47号",
+      "doc_title": "支持港澳青年在粤港澳大湾区就业创业的实施细则",
+      "level": "provincial",
+      "clause_ref": "第五条",
+      "eligible_identities": {
+        "hk_permanent":     { "applicable": true, "note": "" },
+        "hk_non_permanent": { "applicable": true, "note": "" },
+        "mo_permanent":     { "applicable": true, "note": "" },
+        "tw_resident":      { "applicable": true, "note": "依第三十四条同等适用" }
+      },
+      "conditions": {
+        "age_max": 45,
+        "nationality_cn_required": true,
+        "graduate_within_years": 2,
+        "employment_types": ["employed"],
+        "work_districts": [],
+        "labor_contract_min_years": 1,
+        "extra": [
+          { "key": "employer_type", "value": "small_micro_enterprise", "desc": "用人单位须为小微企业" },
+          { "key": "applicant", "value": "employer", "desc": "由用人单位申领，非个人申领" }
+        ]
+      },
+      "benefit": {
+        "type": "monthly",
+        "calc_mode": "formula",
+        "formula": "单位为其实际缴纳的基本养老保险费 + 基本医疗保险费 + 失业保险费 + 工伤保险费 + 生育保险费",
+        "amounts": { "default": null },
+        "unit": "按实际缴纳额",
+        "duration_desc": "最长不超过2年",
+        "duration_months_max": 24,
+        "district_overrides": {},
+        "year_history": []
+      },
+      "application_window": {
+        "window_type": "rolling",
+        "start": null,
+        "end": null,
+        "next_expected": "常态受理",
+        "note": "补贴材料、程序按深圳市现行就业创业补贴管理规定执行"
+      },
+      "application": {
+        "channel_name": "广东省政务服务网 / 深圳公共就业服务系统",
+        "channel_url": "https://hrsspub.sz.gov.cn/ggjyfw/",
+        "submit_via": "employer",
+        "materials": ["由用人单位按深圳市现行就业创业补贴管理规定提交"],
+        "steps": [
+          { "step": 1, "action": "小微企业与毕业2年内港澳台籍高校毕业生签订1年以上劳动合同并依规缴纳社保", "duration": "" },
+          { "step": 2, "action": "由用人单位提出补贴申请", "duration": "" }
+        ],
+        "processing_time": "",
+        "contact_phone": ["12333"]
+      },
+      "sources": [
+        {
+          "title": "支持港澳青年在粤港澳大湾区就业创业的实施细则 第五条",
+          "url": "https://hrss.gd.gov.cn/zdlyxx/zxzy/content/post_4843134.html",
+          "publisher": "广东省人力资源和社会保障厅",
+          "published_date": "2025-11-18",
+          "quote": "小微企业招用毕业2年内的港澳籍高校毕业生，与其签订1年以上劳动合同并按规定缴纳社会保险费的，可申请享受小微企业社保补贴。补贴标准为单位为其实际缴纳的基本养老保险费、基本医疗保险费、失业保险费、工伤保险费、生育保险费，最长不超过2年。",
+          "is_primary": true
+        },
+        {
+          "title": "深圳市关于转发《支持港澳青年在粤港澳大湾区就业创业的实施细则》的通知",
+          "url": "https://hrss.sz.gov.cn/ztfw/cjjy/tzgg/content/post_12635358.html",
+          "publisher": "深圳市人力资源和社会保障局",
+          "published_date": "2026-02-06",
+          "quote": "按照粤人社规〔2025〕47号文第三十四条规定……在我市就业创业的台湾青年，符合相关规定的同等适用《深圳市进一步支持港澳青年就业创业实施细则》（深人社规〔2023〕3号）。",
+          "is_primary": true
+        }
+      ],
+      "verification": {
+        "status": "verified",
+        "last_verified": "2026-08-17",
+        "verified_by": "广东省人社厅官网全文 + 深圳市人社局转发文件",
+        "pending_items": ["深圳市具体经办口径与申请材料清单建议向 12333 核实"],
+        "notes": ""
+      },
+      "validity": {
+        "effective_from": "2025-10-24",
+        "effective_until": "2030-10-23",
+        "supersedes": ["粤人社规〔2022〕7号"],
+        "superseded_by": null
+      },
+      "exclusions": { "cannot_combine_with": [], "note": "" }
+    },
+
+    {
+      "id": "sz-intern-007",
+      "name": "港澳台青年实习补助（单位申领）",
+      "full_name": "港澳台青年实习补助",
+      "issuing_authority": "深圳市人力资源和社会保障局",
+      "doc_number": "深人社规〔2023〕3号",
+      "doc_title": "深圳市进一步支持港澳青年就业创业实施细则 / 港澳青年就业创业补贴申请办理指导清单",
+      "level": "municipal",
+      "clause_ref": "第十二条",
+      "eligible_identities": {
+        "hk_permanent":     { "applicable": true, "note": "" },
+        "hk_non_permanent": { "applicable": true, "note": "" },
+        "mo_permanent":     { "applicable": true, "note": "" },
+        "tw_resident":      { "applicable": true, "note": "政策名称即含「港澳台青年」，明确适用" }
+      },
+      "conditions": {
+        "employment_types": ["intern"],
+        "work_districts": [],
+        "extra": [
+          { "key": "program_source", "value": "government_organized",
+            "desc": "须参与深圳市政府部门组织的各类港澳台青年实习计划" },
+          { "key": "intern_months_min", "value": 1, "desc": "接收港澳台籍青年连续实习满一个月或以上" },
+          { "key": "applicant", "value": "employer", "desc": "由本市用人单位自愿申请" }
+        ]
+      },
+      "benefit": {
+        "type": "monthly",
+        "calc_mode": "fixed",
+        "amounts": { "default": 1000 },
+        "unit": "CNY/人/月",
+        "duration_desc": "补贴期限最长不超过6个月",
+        "duration_months_max": 6,
+        "district_overrides": {
+          "futian": {
+            "calc_mode": "by_education",
+            "amounts": { "associate": 1500, "bachelor": 2250, "master": 3750, "doctor": 6750 },
+            "note": "福田英才荟：粤港澳台青年创新创业载体实习补贴，基准为大专1000/本科1500/研究生2500/博士4500元每月，港澳台籍实习生补贴提高50%（此处金额已含50%上浮）；每名实习生累计不超过6个月；须为认定载体入驻企业",
+            "source_url": "https://www.szft.gov.cn/bmxx_qt/qwzzb/ych/rcpy/qnrc/content/post_12149497.html"
+          }
+        },
+        "year_history": [],
+        "note": "实际补贴支付以工作出勤时间确定"
+      },
+      "application_window": {
+        "window_type": "rolling",
+        "start": null,
+        "end": null,
+        "next_expected": "常态受理",
+        "note": ""
+      },
+      "application": {
+        "channel_name": "深圳市人社局 / 福田区由共青团福田区委员会受理",
+        "channel_url": "https://hrss.sz.gov.cn/ztfw/gaojyzt/index.html",
+        "submit_via": "employer",
+        "materials": ["由用人单位按经办要求提交；福田英才荟另需实习补贴申请表、在读证明、实习合同、考勤表、企业营业执照等"],
+        "steps": [
+          { "step": 1, "action": "参与政府部门组织的港澳台青年实习计划并接收实习生", "duration": "" },
+          { "step": 2, "action": "连续实习满1个月后由用人单位提出申请", "duration": "" }
+        ],
+        "processing_time": "",
+        "contact_phone": ["12333", "福田区 0755-82536136"]
+      },
+      "sources": [
+        {
+          "title": "深圳市人社局 港澳就业创业专题 · 港澳台青年实习补助",
+          "url": "https://hrss.sz.gov.cn/ztfw/gaojyzt/index.html",
+          "publisher": "深圳市人力资源和社会保障局",
+          "published_date": "2026-08-17",
+          "quote": "参与深圳市政府部门组织的各类港澳台青年实习计划的本市用人单位，接收港澳台籍青年连续实习满一个月或以上的，可自愿申请港澳台青年实习补助。补助标准为1000元/人/月（实际补贴支付以工作出勤时间确定）。补贴期限最长不超过6个月。",
+          "is_primary": true
+        },
+        {
+          "title": "福田英才荟粤港澳台青年创新创业支持申请指南",
+          "url": "https://www.szft.gov.cn/bmxx_qt/qwzzb/ych/rcpy/qnrc/content/post_12149497.html",
+          "publisher": "深圳市福田区人才工作局",
+          "published_date": "2026-03-30",
+          "quote": "实习补贴：按照大专1000元/月，本科生1500元/月，研究生2500元/月，博士生4500元/月给予补贴，港澳台籍实习生补贴提高50%，每名实习生补贴累计不超过6个月。",
+          "is_primary": true
+        }
+      ],
+      "verification": {
+        "status": "verified",
+        "last_verified": "2026-08-17",
+        "verified_by": "深圳市人社局专区 + 福田区人才工作局申请指南",
+        "pending_items": [],
+        "notes": "福田英才荟为区级独立政策，与市级实习补助的可否叠加需向经办部门确认"
+      },
+      "validity": {
+        "effective_from": "2023-04-25",
+        "effective_until": "2028-04-24",
+        "supersedes": [],
+        "superseded_by": null,
+        "district_note": "福田英才荟指南有效期至2026-12-31，按年度更新"
+      },
+      "exclusions": { "cannot_combine_with": [], "note": "市级与区级能否叠加待核实" }
+    },
+
+    {
+      "id": "sz-startup-008",
+      "name": "初创企业补贴（一次性创业资助）",
+      "full_name": "初创企业补贴（一次性创业资助）",
+      "issuing_authority": "深圳市人力资源和社会保障局",
+      "doc_number": "深府办规〔2023〕7号",
+      "doc_title": "深圳市就业创业补贴申请办理清单 / 港澳青年就业创业补贴申请办理指导清单",
+      "level": "municipal",
+      "clause_ref": "初创企业补贴",
+      "eligible_identities": {
+        "hk_permanent":     { "applicable": true, "note": "" },
+        "hk_non_permanent": { "applicable": true, "note": "" },
+        "mo_permanent":     { "applicable": true, "note": "" },
+        "tw_resident":      { "applicable": true, "note": "依深人社函〔2026〕8号同等适用" }
+      },
+      "conditions": {
+        "employment_types": ["startup"],
+        "work_districts": [],
+        "extra": [
+          { "key": "social_months_min", "value": 6,
+            "desc": "在其初创企业连续正常缴纳社保费6个月以上（在校学生、休学学生除外）" },
+          { "key": "company_age_max_years", "value": 3, "desc": "初创企业在商事登记成立3年内" },
+          { "key": "graduate_within_years", "value": 5,
+            "desc": "普通高校、中职、技工院校毕业生及留学回国人员在毕业5年内" },
+          { "key": "role", "value": "legal_rep_or_operator",
+            "desc": "须为初创企业法定代表人或经营者，且当前参保状态正常" },
+          { "key": "normal_operation", "value": true, "desc": "初创企业实体需正常经营" }
+        ]
+      },
+      "benefit": {
+        "type": "one_time",
+        "calc_mode": "fixed",
+        "amounts": { "default": 10000 },
+        "unit": "CNY",
+        "duration_desc": "一次性",
+        "duration_months_max": null,
+        "district_overrides": {},
+        "year_history": []
+      },
+      "application_window": {
+        "window_type": "rolling",
+        "start": null,
+        "end": null,
+        "next_expected": "常态受理",
+        "note": ""
+      },
+      "application": {
+        "channel_name": "广东省政务服务网（搜索「一次性创业资助申领」）",
+        "channel_url": "https://www.gdzwfw.gov.cn/",
+        "submit_via": "self",
+        "materials": [
+          "申请之日前6个月内的单位纳税证明",
+          "初创企业银行基本存款账户信息表（单位盖章）"
+        ],
+        "steps": [
+          { "step": 1, "action": "通过自主创业人员身份核实", "duration": "" },
+          { "step": 2, "action": "登录广东省政务服务网「个人入口」，搜索「一次性创业资助申领」，选择办理区域（企业注册地所在区和街道）和办理情形，填写信息上传材料", "duration": "" },
+          { "step": 3, "action": "推送至企业注册地所在街道公共就业服务机构核实受理", "duration": "" },
+          { "step": 4, "action": "核查（线上+线下）", "duration": "5个工作日" },
+          { "step": 5, "action": "初审 → 复审", "duration": "初审3个工作日，复审2个工作日" },
+          { "step": 6, "action": "公示", "duration": "5个工作日" },
+          { "step": 7, "action": "拨入初创企业银行基本存款账户", "duration": "审核通过后次月月底前" }
+        ],
+        "processing_time": "受理 → 核查5工作日 → 初审3工作日 → 复审2工作日 → 公示5工作日 → 次月月底前拨付",
+        "contact_phone": ["12333"]
+      },
+      "sources": [
+        {
+          "title": "深圳市人社局 港澳就业创业专题 · 初创企业补贴",
+          "url": "https://hrss.sz.gov.cn/ztfw/gaojyzt/index.html",
+          "publisher": "深圳市人力资源和社会保障局",
+          "published_date": "2026-08-17",
+          "quote": "自主创业人员在本市创办初创企业，并在其初创企业连续正常缴纳社会保险费6个月以上……补贴标准及期限：10000元，一次性。",
+          "is_primary": true
+        },
+        {
+          "title": "支持港澳青年在粤港澳大湾区就业创业的实施细则 第十一条",
+          "url": "https://hrss.gd.gov.cn/zdlyxx/zxzy/content/post_4843134.html",
+          "publisher": "广东省人力资源和社会保障厅",
+          "published_date": "2025-11-18",
+          "quote": "港澳青年创办的初创企业（担任法定代表人或经营者）登记注册满6个月、处于正常经营状态……可申请一次性创业资助，补贴标准为每人10000元。",
+          "is_primary": true
+        }
+      ],
+      "verification": {
+        "status": "verified",
+        "last_verified": "2026-08-17",
+        "verified_by": "深圳市人社局港澳就业创业专题 + 省厅细则",
+        "pending_items": [],
+        "notes": ""
+      },
+      "validity": {
+        "effective_from": "2023-01-01",
+        "effective_until": null,
+        "supersedes": [],
+        "superseded_by": null
+      },
+      "exclusions": { "cannot_combine_with": ["qh-*"], "note": "与前海十二条同类性质补贴不重复享受" }
+    },
+
+    {
+      "id": "sz-startup-009",
+      "name": "创业场租补贴",
+      "full_name": "创业场租补贴（创业租金补贴）",
+      "issuing_authority": "深圳市人力资源和社会保障局",
+      "doc_number": "深府办规〔2023〕7号",
+      "doc_title": "深圳市就业创业补贴申请办理清单",
+      "level": "municipal",
+      "clause_ref": "创业场租补贴",
+      "eligible_identities": {
+        "hk_permanent":     { "applicable": true, "note": "" },
+        "hk_non_permanent": { "applicable": true, "note": "" },
+        "mo_permanent":     { "applicable": true, "note": "" },
+        "tw_resident":      { "applicable": true, "note": "依深人社函〔2026〕8号同等适用" }
+      },
+      "conditions": {
+        "employment_types": ["startup"],
+        "work_districts": [],
+        "extra": [
+          { "key": "social_months_min", "value": 3, "desc": "本人在其初创企业连续正常缴纳社保满3个月" },
+          { "key": "rent_paid_months_min", "value": 3, "desc": "初创企业实际缴纳场租满3个月" },
+          { "key": "company_age_max_years", "value": 3, "desc": "初创企业在商事登记成立3年内" },
+          { "key": "graduate_within_years", "value": 5, "desc": "毕业5年内" },
+          { "key": "role", "value": "legal_rep", "desc": "须为初创企业法定代表人且当前参保正常" },
+          { "key": "lease_requirement", "value": true,
+            "desc": "租赁场地用于经营且租赁地址与注册登记地一致，场地非法定代表人或经营者自有物业" }
+        ]
+      },
+      "benefit": {
+        "type": "monthly",
+        "calc_mode": "by_district",
+        "amounts": { "default": 500 },
+        "unit": "CNY/月",
+        "duration_desc": "最长不超过3年；实际租金低于补贴标准的按实际租金补贴",
+        "duration_months_max": 36,
+        "tiers": [
+          { "scenario": "认定载体内（一般人员）", "year1": 1200, "year2": 1000, "year3": 700, "unit": "CNY/月" },
+          { "scenario": "认定载体外（一般人员）", "monthly_max": 500, "annual_max": 6000, "unit": "CNY" },
+          { "scenario": "认定载体内（特定群体：在校学生、毕业5年内毕业生、留学回国人员、退役军人）", "year1": 1560, "year2": 1300, "year3": 910, "unit": "CNY/月" },
+          { "scenario": "认定载体外（特定群体）", "monthly_max": 650, "annual_max": 7800, "unit": "CNY" }
+        ],
+        "district_overrides": {},
+        "year_history": []
+      },
+      "application_window": {
+        "window_type": "rolling",
+        "start": null,
+        "end": null,
+        "next_expected": "常态受理",
+        "note": "首次申请核定时段为首次申请月往前3个完整自然月；此后每满3个月的次月月底前提出申请；未正常申请的下一次最多往前追溯6个月"
+      },
+      "application": {
+        "channel_name": "广东省政务服务网（搜索「创业租金补贴申领」）",
+        "channel_url": "https://www.gdzwfw.gov.cn/",
+        "submit_via": "self",
+        "materials": [
+          "房屋租赁凭证（原件扫描上传）",
+          "租赁合同（原件扫描上传）",
+          "租金发票（须与租赁合同内容一致）",
+          "申请之日前3个月内的单位纳税证明",
+          "初创企业银行基本存款账户信息表（单位盖章）"
+        ],
+        "steps": [
+          { "step": 1, "action": "登录广东省政务服务网「个人入口」，搜索「创业租金补贴申领」", "duration": "" },
+          { "step": 2, "action": "选择企业注册地所在区和街道，填写信息上传材料", "duration": "" },
+          { "step": 3, "action": "街道公共就业服务机构受理", "duration": "" },
+          { "step": 4, "action": "实地核查", "duration": "5个工作日" },
+          { "step": 5, "action": "初审 → 复审 → 公示", "duration": "3+2+5个工作日" },
+          { "step": 6, "action": "拨入初创企业基本存款账户", "duration": "审核通过后次月月底前" }
+        ],
+        "processing_time": "受理 → 实地核查5工作日 → 初审3工作日 → 复审2工作日 → 公示5工作日 → 次月月底前拨付",
+        "contact_phone": ["12333"]
+      },
+      "sources": [
+        {
+          "title": "深圳市人社局 港澳就业创业专题 · 创业场租补贴",
+          "url": "https://hrss.sz.gov.cn/ztfw/gaojyzt/index.html",
+          "publisher": "深圳市人力资源和社会保障局",
+          "published_date": "2026-08-17",
+          "quote": "自主创业人员在经市直部门及各区政府（新区管委会）认定或备案的创业带动就业孵化基地、科技企业孵化载体、留学生创业园等内创办初创企业，按照第一年每月1200元、第二年每月1000元、第三年每月700元标准给予租金补贴。……特定群体认定载体内第一年1560元/月、第二年1300元/月、第三年910元/月；认定载体外每月最高不超过650元（每年最高不超过7800元）。",
+          "is_primary": true
+        }
+      ],
+      "verification": {
+        "status": "verified",
+        "last_verified": "2026-08-17",
+        "verified_by": "深圳市人社局港澳就业创业专题官方专区",
+        "pending_items": [],
+        "notes": "省级细则第十二条标准为每年最高6000元，深圳分认定载体内外与人员类别细化分档"
+      },
+      "validity": {
+        "effective_from": "2023-01-01",
+        "effective_until": null,
+        "supersedes": [],
+        "superseded_by": null
+      },
+      "exclusions": { "cannot_combine_with": ["qh-startup-*"], "note": "与前海租金补贴不重复享受" }
+    },
+
+    {
+      "id": "sz-startup-010",
+      "name": "创业带动就业补贴",
+      "full_name": "创业带动就业补贴（初创企业吸纳劳动者就业补贴）",
+      "issuing_authority": "深圳市人力资源和社会保障局",
+      "doc_number": "深府办规〔2023〕7号",
+      "doc_title": "深圳市就业创业补贴申请办理清单",
+      "level": "municipal",
+      "clause_ref": "创业带动就业补贴",
+      "eligible_identities": {
+        "hk_permanent":     { "applicable": true, "note": "" },
+        "hk_non_permanent": { "applicable": true, "note": "" },
+        "mo_permanent":     { "applicable": true, "note": "" },
+        "tw_resident":      { "applicable": true, "note": "依深人社函〔2026〕8号同等适用" }
+      },
+      "conditions": {
+        "employment_types": ["startup"],
+        "work_districts": [],
+        "extra": [
+          { "key": "hired_contract_min_years", "value": 1, "desc": "为招用人员签订1年以上期限劳动合同" },
+          { "key": "hired_social_months_min", "value": 6, "desc": "并已连续正常缴交6个月以上社保费" },
+          { "key": "company_age_max_years", "value": 3, "desc": "初创企业在商事登记成立3年内" },
+          { "key": "graduate_within_years", "value": 5, "desc": "毕业5年内" },
+          { "key": "role", "value": "legal_rep", "desc": "须为法定代表人且当前参保正常" },
+          { "key": "no_prior_hiring_subsidy", "value": true,
+            "desc": "未享受过吸纳类补贴（吸纳退役军人就业补贴、吸纳脱贫人口一次性就业补贴、一次性吸纳就业补贴、一次性扩岗补助）" }
+        ]
+      },
+      "benefit": {
+        "type": "one_time",
+        "calc_mode": "formula",
+        "formula": "招用3人及以下：每人2000元；招用4人及以上：前3人每人2000元，每增加1人给予3000元",
+        "amounts": { "per_person_first3": 2000, "per_person_additional": 3000 },
+        "unit": "CNY",
+        "cap_total": 30000,
+        "duration_desc": "按年度申请，总额最高不超过3万元",
+        "duration_months_max": null,
+        "district_overrides": {},
+        "year_history": [],
+        "note": "不同初创企业吸纳同一劳动者就业的不能再次申领"
+      },
+      "application_window": {
+        "window_type": "rolling",
+        "start": null,
+        "end": null,
+        "next_expected": "按年度申请",
+        "note": ""
+      },
+      "application": {
+        "channel_name": "广东省政务服务网（搜索「创业带动就业补贴申领」）",
+        "channel_url": "https://www.gdzwfw.gov.cn/",
+        "submit_via": "self",
+        "materials": [
+          "招用法定劳动年龄人员1年以上的劳动合同",
+          "申请之日前6个月内的工资支付凭证（由初创企业基本存款账户支付）",
+          "申请之日前6个月内的单位纳税证明",
+          "初创企业银行基本存款账户信息表（单位盖章）"
+        ],
+        "steps": [
+          { "step": 1, "action": "与招用人员签订1年以上劳动合同并连续缴纳6个月以上社保", "duration": "" },
+          { "step": 2, "action": "登录广东省政务服务网搜索「创业带动就业补贴申领」提交", "duration": "" },
+          { "step": 3, "action": "街道公共就业服务机构受理 → 核查 → 初审 → 复审 → 公示 → 拨付", "duration": "5+3+2+5工作日" }
+        ],
+        "processing_time": "受理 → 核查5工作日 → 初审3工作日 → 复审2工作日 → 公示5工作日 → 次月月底前拨付",
+        "contact_phone": ["12333"]
+      },
+      "sources": [
+        {
+          "title": "深圳市人社局 港澳就业创业专题 · 创业带动就业补贴",
+          "url": "https://hrss.sz.gov.cn/ztfw/gaojyzt/index.html",
+          "publisher": "深圳市人力资源和社会保障局",
+          "published_date": "2026-08-17",
+          "quote": "招用3人及以下：每人2000元；招用4人及以上：每增加1人给予3000元，总额最高不超过3万元；不同初创企业吸纳同一劳动者就业的不能再次申领。",
+          "is_primary": true
+        }
+      ],
+      "verification": {
+        "status": "verified",
+        "last_verified": "2026-08-17",
+        "verified_by": "深圳市人社局港澳就业创业专题官方专区",
+        "pending_items": [],
+        "notes": ""
+      },
+      "validity": { "effective_from": "2023-01-01", "effective_until": null, "supersedes": [], "superseded_by": null },
+      "exclusions": {
+        "cannot_combine_with": ["sz-hiring-*"],
+        "note": "与吸纳退役军人就业补贴、吸纳脱贫人口一次性就业补贴、一次性吸纳就业补贴、一次性扩岗补助互斥"
+      }
+    },
+
+    {
+      "id": "sz-talent-011",
+      "name": "新引进博士人才生活补贴",
+      "full_name": "深圳市新引进博士人才生活补贴",
+      "issuing_authority": "深圳市人力资源和社会保障局",
+      "doc_number": "",
+      "doc_title": "深圳市新引进博士人才生活补贴相关规定",
+      "level": "municipal",
+      "clause_ref": "",
+      "eligible_identities": {
+        "hk_permanent":     { "applicable": true, "note": "" },
+        "hk_non_permanent": { "applicable": "unverified", "note": "官方表述为「香港、澳门永久性居民」及「赴港澳定居的内地居民（已注销内地户籍）」，优才等入境计划居民是否适用未明确，待核实" },
+        "mo_permanent":     { "applicable": true, "note": "" },
+        "tw_resident":      { "applicable": "unverified", "note": "官方页面身份条件仅列港澳，台湾居民适用性未明确。但材料清单中出现《台湾地区学历学位认证书》，存在适用可能，需向 12333 或市人社局核实" }
+      },
+      "conditions": {
+        "age_max": 35,
+        "education_min": "doctor",
+        "employment_types": ["employed"],
+        "work_districts": [],
+        "extra": [
+          { "key": "first_employment_in_sz", "value": true, "desc": "首次在深圳就业" },
+          { "key": "full_time_in_sz", "value": true, "desc": "申请时在深圳全职工作" },
+          { "key": "social_months_first", "value": 3, "desc": "首发：引进后通过本市工作单位缴纳社保累计3个月以上" },
+          { "key": "social_months_renew", "value": 12, "desc": "续发：自首发申请之日起通过本市工作单位连续缴纳社保满12个月" }
+        ]
+      },
+      "benefit": {
+        "type": "one_time",
+        "calc_mode": "fixed",
+        "amounts": { "default": 100000 },
+        "unit": "CNY/人",
+        "duration_desc": "分两次审核发放：首次发放30%（3万元），续发70%（7万元）",
+        "duration_months_max": null,
+        "district_overrides": {},
+        "year_history": []
+      },
+      "application_window": {
+        "window_type": "rolling",
+        "start": null,
+        "end": null,
+        "next_expected": "常态受理",
+        "note": "首发须在首次通过本市工作单位缴纳社保之日起12个月内申请；单位须在博士人才引进之日起12个月内提交"
+      },
+      "application": {
+        "channel_name": "广东政务服务网（检索「深圳市新引进博士人才生活补贴」）/ 深圳市人才一体化综合服务平台",
+        "channel_url": "https://www.gdzwfw.gov.cn/",
+        "submit_via": "employer",
+        "materials": [
+          "深圳市新引进博士人才生活补贴诚信承诺书",
+          "自引进之日起至申报之日的个人所得税纳税记录",
+          "港澳居民身份证和《港澳居民来往内地通行证》",
+          "学历学位认证书（境外学历：教育部留学服务中心《香港、澳门特别行政区学历学位认证书》《台湾地区学历学位认证书》或《国外学历学位认证书》；国内学历：《教育部学历证书电子注册备案表》）"
+        ],
+        "steps": [
+          { "step": 1, "action": "首发：在新引进博士人才生活补贴业务系统填报个人信息并作出书面承诺，提交所在单位审核", "duration": "缴纳社保之日起12个月内" },
+          { "step": 2, "action": "单位审核并承诺后向市人力资源保障部门提交申请", "duration": "引进之日起12个月内" },
+          { "step": 3, "action": "续发：首笔发放后系统自动生成续发数据，确认信息上传材料提交单位审核", "duration": "符合续发条件后" }
+        ],
+        "processing_time": "",
+        "contact_phone": ["12333"]
+      },
+      "sources": [
+        {
+          "title": "深圳市人社局 港澳就业创业专题 · 深圳市新引进博士人才生活补贴",
+          "url": "https://hrss.sz.gov.cn/ztfw/gaojyzt/index.html",
+          "publisher": "深圳市人力资源和社会保障局",
+          "published_date": "2026-08-17",
+          "quote": "首次在深圳就业的年龄35岁（含）以下具有博士学历（学位）的港澳人才：①具有以下身份之一——香港、澳门永久性居民；赴港澳定居的内地居民（已注销内地户籍）……补贴标准：100000元/人，分两次审核发放：首次发放30%，续发70%。",
+          "is_primary": true
+        }
+      ],
+      "verification": {
+        "status": "verified",
+        "last_verified": "2026-08-17",
+        "verified_by": "深圳市人社局港澳就业创业专题官方专区",
+        "pending_items": [
+          "中国台湾居民适用性未在身份条件中明确列出，需向市人社局核实",
+          "香港非永久性居民（优才等入境计划）适用性待核实"
+        ],
+        "notes": ""
+      },
+      "validity": { "effective_from": null, "effective_until": null, "supersedes": [], "superseded_by": null },
+      "exclusions": { "cannot_combine_with": [], "note": "" }
+    },
+
+    {
+      "id": "sz-youth-012",
+      "name": "青年人才安居补贴 / 过渡性住房",
+      "full_name": "深圳市青年人才来深发展服务政策（安居保障）",
+      "issuing_authority": "深圳市人力资源和社会保障局",
+      "doc_number": "",
+      "doc_title": "青年人才来深发展服务新政（「青春有你 圳好来深」）",
+      "level": "municipal",
+      "clause_ref": "安居保障",
+      "eligible_identities": {
+        "hk_permanent":     { "applicable": "unverified", "note": "新政面向「青年人才」，未明确区分身份；港澳台适用性待核实" },
+        "hk_non_permanent": { "applicable": "unverified", "note": "待核实" },
+        "mo_permanent":     { "applicable": "unverified", "note": "待核实" },
+        "tw_resident":      { "applicable": "unverified", "note": "入户补贴部分明确「含外籍和港澳台人员」，但安居补贴是否同样适用待核实" }
+      },
+      "conditions": {
+        "age_max": 45,
+        "employment_types": ["employed", "startup"],
+        "work_districts": [],
+        "no_property_in_sz": true,
+        "extra": [
+          { "key": "first_employment_after", "value": "2026-01-01",
+            "desc": "2026年1月1日起首次在深就业创业（以首次缴纳职工社保时间为准）" },
+          { "key": "age_strict", "value": "under_45_exclusive", "desc": "45周岁（不含）以下" },
+          { "key": "qualification", "value": "education_or_innovation",
+            "desc": "在教育背景、创新能力等方面符合任一标准" }
+        ]
+      },
+      "benefit": {
+        "type": "monthly",
+        "calc_mode": "fixed",
+        "amounts": { "default": 1250 },
+        "unit": "CNY/月（税后1000元）",
+        "duration_desc": "安居补贴发放期最长24个月；或选择租住过渡性住房，租金约为市场参考租金60%，优惠期最长36个月（二者择一）",
+        "duration_months_max": 24,
+        "alternatives": [
+          { "option": "过渡性住房", "desc": "租金约为市场参考租金60%，优惠期最长36个月" },
+          { "option": "安居补贴", "desc": "每月1250元（税后1000元），最长24个月，限未租住过渡性住房者" }
+        ],
+        "district_overrides": {},
+        "year_history": []
+      },
+      "application_window": {
+        "window_type": "rolling",
+        "start": "2026-01-01",
+        "end": null,
+        "next_expected": "常态受理",
+        "note": "政策自2026年1月1日起实施"
+      },
+      "application": {
+        "channel_name": "深圳市人力资源生态服务平台「大学生就业」专区 / 微信搜「深圳人才」小程序",
+        "channel_url": "https://hrss.sz.gov.cn/",
+        "submit_via": "self",
+        "materials": ["待官方指南公布"],
+        "steps": [
+          { "step": 1, "action": "登录深圳市人力资源生态服务平台或「深圳人才」小程序查询并申请", "duration": "" }
+        ],
+        "processing_time": "",
+        "contact_phone": ["12333"]
+      },
+      "sources": [
+        {
+          "title": "「一张桌」免费用「一套房」免费租 深圳优化青年人才发展环境，新服务元旦起推出",
+          "url": "https://www.sznews.com/news/content/2025-12/07/content_31799999.htm",
+          "publisher": "深圳新闻网 / 深圳晚报（消息源：深圳市人力资源和社会保障局）",
+          "published_date": "2025-12-07",
+          "quote": "45周岁（不含）以下、2026年1月1日起首次在深就业创业（以首次缴纳职工社保时间为准），且在教育背景、创新能力等方面符合任一标准的青年人才，可申请租住全市范围内的过渡性住房，租金仅为市场参考租金的60%左右，优惠期最长36个月；未租住过渡性住房的，可申请每月1250元（税后1000元）的安居补贴，发放期最长24个月。",
+          "is_primary": false
+        }
+      ],
+      "verification": {
+        "status": "unverified",
+        "last_verified": "2026-08-17",
+        "verified_by": "媒体报道（消息源为深圳市人社局），未找到官方政策原文页面",
+        "pending_items": [
+          "需找到深圳市人社局官方政策原文与申请指南",
+          "港澳台居民适用性需明确核实",
+          "「教育背景、创新能力等方面符合任一标准」的具体标准需查明"
+        ],
+        "notes": "本条目为媒体报道信息，前台须显示「待核实」标记，不得作为确定结论呈现"
+      },
+      "validity": { "effective_from": "2026-01-01", "effective_until": null, "supersedes": [], "superseded_by": null },
+      "exclusions": {
+        "cannot_combine_with": ["qh-live-002"],
+        "note": "过渡性住房与安居补贴二者择一；与前海居住补贴可能互斥，待核实"
+      }
+    },
+
+    {
+      "id": "sz-startup-013",
+      "name": "港澳青年创新创业基地获奖配套资助",
+      "full_name": "港澳青年创新创业基地获奖配套资助与政策性配套资助",
+      "issuing_authority": "深圳市人力资源和社会保障局",
+      "doc_number": "深人社规〔2023〕3号",
+      "doc_title": "深圳市进一步支持港澳青年就业创业实施细则",
+      "level": "municipal",
+      "clause_ref": "",
+      "eligible_identities": {
+        "hk_permanent":     { "applicable": true, "note": "" },
+        "hk_non_permanent": { "applicable": true, "note": "" },
+        "mo_permanent":     { "applicable": true, "note": "" },
+        "tw_resident":      { "applicable": "unverified", "note": "政策名称为「港澳青年创新创业基地」，台湾青年适用性待核实；但依深人社函〔2026〕8号台湾青年同等适用深人社规〔2023〕3号，可能适用" }
+      },
+      "conditions": {
+        "employment_types": ["startup"],
+        "work_districts": [],
+        "extra": [
+          { "key": "base_requirement", "value": true, "desc": "须入驻深圳市港澳青年创新创业基地" },
+          { "key": "award_source_a", "value": "provincial_or_ministerial_contest",
+            "desc": "获奖配套：两年内在部省级部门主办的创业大赛获奖" },
+          { "key": "award_source_b", "value": "hk_mo_funding",
+            "desc": "政策性配套：获得香港青年发展基金、香港创新及科技基金企业支援计划、澳门青年创业援助计划资助" }
+        ]
+      },
+      "benefit": {
+        "type": "one_time",
+        "calc_mode": "formula",
+        "formula": "获奖配套：按获得赛事奖励金额给予100%落地配套资助；政策性配套：每个20万元",
+        "amounts": { "policy_matching": 200000 },
+        "unit": "CNY",
+        "duration_desc": "一次性",
+        "duration_months_max": null,
+        "related": [
+          { "item": "基地授牌奖补", "amount": 500000, "desc": "对市级人社部门授牌「深圳市港澳青年创新创业基地」的载体，给予每个50万元一次性奖补（面向载体，非个人）" },
+          { "item": "基地年度考核优秀奖补", "amount": 100000, "desc": "对年度考核优秀的市级基地给予每个10万元一次性奖补（面向载体）" }
+        ],
+        "district_overrides": {},
+        "year_history": []
+      },
+      "application_window": {
+        "window_type": "rolling",
+        "start": null,
+        "end": null,
+        "next_expected": "常态受理",
+        "note": ""
+      },
+      "application": {
+        "channel_name": "深圳市人力资源和社会保障局",
+        "channel_url": "https://hrss.sz.gov.cn/ztfw/gaojyzt/index.html",
+        "submit_via": "institution",
+        "materials": ["待查官方办事指南"],
+        "steps": [
+          { "step": 1, "action": "入驻深圳市港澳青年创新创业基地", "duration": "" },
+          { "step": 2, "action": "凭获奖证明或境外基金资助证明提出配套资助申请", "duration": "" }
+        ],
+        "processing_time": "",
+        "contact_phone": ["12333"]
+      },
+      "sources": [
+        {
+          "title": "谁能领？领多少？35项就业创业补贴一文集齐",
+          "url": "https://www.toutiao.com/article/7555365125364990506",
+          "publisher": "转载自深圳市人社局政策汇编（媒体平台）",
+          "published_date": "2025-09-01",
+          "quote": "对市级人力资源保障部门授牌「深圳市港澳青年创新创业基地」的创新创业载体，给予每个50万元的一次性奖补。对年度考核优秀的市级港澳青年创新创业基地，给予每个10万元的一次性奖补。对两年内在部省级部门主办的创业大赛获奖并入驻深圳市港澳青年创新创业基地的创业团队，按其获得赛事奖励金额给予100%落地配套资助。对获得香港青年发展基金、香港创新及科技基金企业支援计划、澳门青年创业援助计划资助并入驻深圳港澳青年创新创业基地的创业团队，给予每个20万元落地配套资助。",
+          "is_primary": false
+        }
+      ],
+      "verification": {
+        "status": "unverified",
+        "last_verified": "2026-08-17",
+        "verified_by": "媒体转载的政策汇编，未找到深圳市人社局官方原文页面",
+        "pending_items": [
+          "需在深圳市人社局官网找到深人社规〔2023〕3号原文，核对配套资助条款与金额",
+          "中国台湾青年适用性需核实",
+          "申请材料与办事流程需补全"
+        ],
+        "notes": "本条目来源为媒体转载，前台须显示「待核实」标记"
+      },
+      "validity": {
+        "effective_from": "2023-04-25",
+        "effective_until": "2028-04-24",
+        "supersedes": [],
+        "superseded_by": null
+      },
+      "exclusions": { "cannot_combine_with": [], "note": "" }
+    },
+
+    {
+      "id": "gba-youth-014",
+      "name": "大湾区青年就业计划生活补助",
+      "full_name": "大湾区青年就业计划生活补助 / 澳门青年来深就业生活补助",
+      "issuing_authority": "广东省人力资源和社会保障厅 / 深圳市人力资源和社会保障局",
+      "doc_number": "粤人社规〔2025〕47号 / 深人社函〔2026〕8号",
+      "doc_title": "支持港澳青年在粤港澳大湾区就业创业的实施细则 / 深圳市转发通知",
+      "level": "provincial",
+      "clause_ref": "第八条",
+      "eligible_identities": {
+        "hk_permanent":     { "applicable": true, "note": "须参加香港特区政府「大湾区青年就业计划」" },
+        "hk_non_permanent": { "applicable": "unverified", "note": "取决于香港「大湾区青年就业计划」自身的参加资格，待核实" },
+        "mo_permanent":     { "applicable": true, "note": "须参加澳门特区政府「澳门青年大湾区职业之路资助计划」" },
+        "tw_resident":      { "applicable": false, "note": "本项针对香港、澳门特区政府专项计划参加者，台湾居民不适用" }
+      },
+      "conditions": {
+        "employment_types": ["employed"],
+        "work_districts": [],
+        "extra": [
+          { "key": "program_participation", "value": "hk_gba_youth_scheme_or_mo_scheme",
+            "desc": "须参加香港「大湾区青年就业计划」或澳门「青年大湾区职业之路资助计划」，并按计划安排在深圳就业" }
+        ]
+      },
+      "benefit": {
+        "type": "monthly",
+        "calc_mode": "fixed",
+        "amounts": { "default": 2000 },
+        "unit": "CNY/月",
+        "duration_desc": "补贴期限为参加计划期间；另有资料显示累计不超过18个月",
+        "duration_months_max": 18,
+        "district_overrides": {},
+        "year_history": [
+          { "year": 2023, "amounts": { "default": 1000 },
+            "note": "深人社规〔2023〕3号第九条原标准为每人每月不超过1000元、最长不超过18个月" },
+          { "year": 2026, "amounts": { "default": 2000 },
+            "note": "依粤人社规〔2025〕47号第八条及深人社函〔2026〕8号，提高至每人每月2000元" }
+        ]
+      },
+      "application_window": {
+        "window_type": "rolling",
+        "start": null,
+        "end": null,
+        "next_expected": "常态受理，随计划安排",
+        "note": ""
+      },
+      "application": {
+        "channel_name": "深圳市人力资源和社会保障局 / 区公共就业服务机构",
+        "channel_url": "https://hrss.sz.gov.cn/ztfw/gaojyzt/index.html",
+        "submit_via": "self",
+        "materials": ["参加计划的证明材料", "在深就业与参保证明", "身份证明"],
+        "steps": [
+          { "step": 1, "action": "通过香港特区政府或澳门特区政府相应计划获得在深就业安排", "duration": "" },
+          { "step": 2, "action": "在深就业后向经办机构申请生活补助", "duration": "" }
+        ],
+        "processing_time": "",
+        "contact_phone": ["12333"]
+      },
+      "sources": [
+        {
+          "title": "支持港澳青年在粤港澳大湾区就业创业的实施细则 第八条",
+          "url": "https://hrss.gd.gov.cn/zdlyxx/zxzy/content/post_4843134.html",
+          "publisher": "广东省人力资源和社会保障厅",
+          "published_date": "2025-11-18",
+          "quote": "参加香港「大湾区青年就业计划」并在大湾区九市就业的香港青年，可申请享受大湾区青年就业计划生活补助。补贴标准为每人每月不超过2000元，补贴期限为参加计划期间。对澳门特区政府实施的澳门青年大湾区职业之路资助计划，可参照以上标准给予生活补助。",
+          "is_primary": true
+        },
+        {
+          "title": "深圳市关于转发《支持港澳青年在粤港澳大湾区就业创业的实施细则》的通知",
+          "url": "https://hrss.sz.gov.cn/ztfw/cjjy/tzgg/content/post_12635358.html",
+          "publisher": "深圳市人力资源和社会保障局",
+          "published_date": "2026-02-06",
+          "quote": "对参加澳门特区政府实施的澳门青年大湾区职业之路资助计划并按计划安排在我市就业的澳门青年，参照香港大湾区青年就业计划补贴标准，按每人每月2000元给予生活补助，补贴期限为参加计划并在本市就业期间。",
+          "is_primary": true
+        }
+      ],
+      "verification": {
+        "status": "verified",
+        "last_verified": "2026-08-17",
+        "verified_by": "广东省人社厅细则原文 + 深圳市人社局转发文件原文",
+        "pending_items": ["18个月上限的官方依据需进一步确认（省细则表述为「参加计划期间」）"],
+        "notes": "标准已从深人社规〔2023〕3号的1000元/月提高至2000元/月"
+      },
+      "validity": {
+        "effective_from": "2025-10-24",
+        "effective_until": "2030-10-23",
+        "supersedes": ["深人社规〔2023〕3号 第九条（1000元标准）"],
+        "superseded_by": null
+      },
+      "exclusions": { "cannot_combine_with": [], "note": "" }
+    },
+
+    {
+      "id": "sz-jobseek-015",
+      "name": "基层就业补贴",
+      "full_name": "港澳台籍高校毕业生基层就业补贴",
+      "issuing_authority": "深圳市人力资源和社会保障局",
+      "doc_number": "深人社规〔2023〕3号",
+      "doc_title": "深圳市进一步支持港澳青年就业创业实施细则",
+      "level": "municipal",
+      "clause_ref": "第六条",
+      "eligible_identities": {
+        "hk_permanent":     { "applicable": true, "note": "" },
+        "hk_non_permanent": { "applicable": true, "note": "" },
+        "mo_permanent":     { "applicable": true, "note": "" },
+        "tw_resident":      { "applicable": true, "note": "依深人社函〔2026〕8号同等适用深人社规〔2023〕3号" }
+      },
+      "conditions": {
+        "graduate_within_years": 2,
+        "employment_types": ["employed"],
+        "work_districts": [],
+        "labor_contract_min_years": 1,
+        "extra": [
+          { "key": "employer_type", "value": "sme_or_community",
+            "desc": "到中小微企业、个体工商户、社会组织等就业，或到街道、社区社会管理和公共服务岗位就业" },
+          { "key": "social_months_min", "value": 6, "desc": "并按规定缴纳6个月以上社会保险费" }
+        ]
+      },
+      "benefit": {
+        "type": "one_time",
+        "calc_mode": "fixed",
+        "amounts": { "default": 3000 },
+        "unit": "CNY/人",
+        "duration_desc": "一次性",
+        "duration_months_max": null,
+        "district_overrides": {},
+        "year_history": []
+      },
+      "application_window": {
+        "window_type": "rolling",
+        "start": null,
+        "end": null,
+        "next_expected": "常态受理",
+        "note": ""
+      },
+      "application": {
+        "channel_name": "广东省政务服务网 / 深圳公共就业服务系统",
+        "channel_url": "https://hrsspub.sz.gov.cn/ggjyfw/",
+        "submit_via": "self",
+        "materials": ["身份证明", "学历证明", "劳动合同", "社保缴纳证明"],
+        "steps": [
+          { "step": 1, "action": "到符合条件的单位就业并签订1年以上劳动合同", "duration": "" },
+          { "step": 2, "action": "缴纳6个月以上社保后提出申请", "duration": "" }
+        ],
+        "processing_time": "",
+        "contact_phone": ["12333"]
+      },
+      "sources": [
+        {
+          "title": "深圳市进一步支持港澳青年就业创业实施细则 第六条",
+          "url": "https://www.yantian.gov.cn/cn/service/ldjy/jyfw/zzcy/zcfg/content/post_11074183.html",
+          "publisher": "深圳市人力资源和社会保障局（盐田区政府网站转载全文）",
+          "published_date": "2023-04-25",
+          "quote": "毕业2年内的港澳籍高校毕业生，到中小微企业、个体工商户、社会组织等就业，或到街道、社区社会管理和公共服务岗位就业，签订1年以上劳动合同或服务协议，并按规定缴纳6个月以上社会保险费的，可申请享受基层就业补贴。补贴标准为每人3000元。",
+          "is_primary": true
+        }
+      ],
+      "verification": {
+        "status": "verified",
+        "last_verified": "2026-08-17",
+        "verified_by": "深人社规〔2023〕3号全文（政府网站转载）",
+        "pending_items": [
+          "注意：省级层面粤人社规〔2025〕47号已将高校毕业生基层岗位补贴和基层就业补贴整合为粤东粤西粤北地区就业补贴并删除原条款，深圳市级此项是否仍执行需向 12333 核实"
+        ],
+        "notes": "风险提示：省级政策调整可能影响本项的现行有效性，须优先核实"
+      },
+      "validity": {
+        "effective_from": "2023-04-25",
+        "effective_until": "2028-04-24",
+        "supersedes": [],
+        "superseded_by": null
+      },
+      "exclusions": { "cannot_combine_with": [], "note": "" }
+    },
+
+    {
+      "id": "sz-jobseek-016",
+      "name": "求职创业补贴",
+      "full_name": "深圳市高校毕业生求职创业补贴",
+      "issuing_authority": "深圳市人力资源和社会保障局",
+      "doc_number": "",
+      "doc_title": "深圳市就业创业补贴申请办理清单",
+      "level": "municipal",
+      "clause_ref": "求职创业补贴",
+      "eligible_identities": {
+        "hk_permanent":     { "applicable": true, "note": "申请材料明确列出港澳居民来往内地通行证或港澳居民居住证" },
+        "hk_non_permanent": { "applicable": true, "note": "" },
+        "mo_permanent":     { "applicable": true, "note": "" },
+        "tw_resident":      { "applicable": "unverified", "note": "申请材料仅列港澳证件，台湾居民适用性待核实" }
+      },
+      "conditions": {
+        "employment_types": ["student"],
+        "work_districts": [],
+        "extra": [
+          { "key": "school_location", "value": "shenzhen",
+            "desc": "须为深圳市普通高等学校、中等职业学校、技工院校毕业学年学生" },
+          { "key": "hardship_category", "value": "required",
+            "desc": "须符合以下情形之一：城乡困难家庭（低保家庭、残疾人家庭、脱贫人口家庭、特困职工家庭）成员、特困人员、残疾毕业生、曾获得国家助学贷款（单一学制内）" }
+        ]
+      },
+      "benefit": {
+        "type": "one_time",
+        "calc_mode": "fixed",
+        "amounts": { "default": 3000 },
+        "unit": "CNY/人",
+        "duration_desc": "一次性",
+        "duration_months_max": null,
+        "district_overrides": {},
+        "year_history": []
+      },
+      "application_window": {
+        "window_type": "annual_batch",
+        "start": null,
+        "end": null,
+        "next_expected": "每年毕业学年第一学期9月",
+        "note": "原则上应于毕业学年第一学期的9月向所在学校递交申请材料"
+      },
+      "application": {
+        "channel_name": "由毕业生所在学校代为向所在区或街道公共就业服务机构申请",
+        "channel_url": "https://hrsspub.sz.gov.cn/ggjyfw/",
+        "submit_via": "school",
+        "materials": [
+          "《深圳市高校毕业生求职创业补贴申请表》（网上申报成功后在线打印并签名）",
+          "港澳居民来往内地通行证或港澳居民居住证",
+          "本人银行卡",
+          "困难情形证明材料（低保证/残疾人证/脱贫记录簿/特困职工证/特困人员供养证/国家助学贷款合同等）"
+        ],
+        "steps": [
+          { "step": 1, "action": "向所在学校递交申请材料", "duration": "毕业学年第一学期9月" },
+          { "step": 2, "action": "由学校代为向所在区或街道公共就业服务机构提出申请", "duration": "" }
+        ],
+        "processing_time": "",
+        "contact_phone": ["12333"]
+      },
+      "sources": [
+        {
+          "title": "深圳市人社局 港澳就业创业专题 · 求职创业补贴",
+          "url": "https://hrss.sz.gov.cn/ztfw/gaojyzt/index.html",
+          "publisher": "深圳市人力资源和社会保障局",
+          "published_date": "2026-08-17",
+          "quote": "①深圳市普通高等学校、中等职业学校、技工院校毕业学年学生；②符合以下情形之一：城乡困难家庭（低保家庭、残疾人家庭、脱贫人口家庭、特困职工家庭）成员、特困人员、残疾毕业生、曾获得国家助学贷款（单一学制内）。补贴标准：一次性3000元/人。",
+          "is_primary": true
+        }
+      ],
+      "verification": {
+        "status": "verified",
+        "last_verified": "2026-08-17",
+        "verified_by": "深圳市人社局港澳就业创业专题官方专区",
+        "pending_items": ["中国台湾居民适用性待核实"],
+        "notes": ""
+      },
+      "validity": { "effective_from": null, "effective_until": null, "supersedes": [], "superseded_by": null },
+      "exclusions": { "cannot_combine_with": [], "note": "" }
+    },
+
+    {
+      "id": "sz-skill-017",
+      "name": "职业技能提升补贴",
+      "full_name": "职业技能提升补贴",
+      "issuing_authority": "深圳市人力资源和社会保障局",
+      "doc_number": "深人社规〔2023〕8号",
+      "doc_title": "深圳市职业技能培训补贴办法",
+      "level": "municipal",
+      "clause_ref": "职业技能提升补贴",
+      "eligible_identities": {
+        "hk_permanent":     { "applicable": true, "note": "以「在本市正常缴交社会保险费人员」身份适用" },
+        "hk_non_permanent": { "applicable": true, "note": "同上" },
+        "mo_permanent":     { "applicable": true, "note": "同上" },
+        "tw_resident":      { "applicable": true, "note": "条件为「在本市正常缴交社会保险费人员」，不限身份，台湾居民在深参保即可适用" }
+      },
+      "conditions": {
+        "employment_types": ["employed", "flexible"],
+        "work_districts": [],
+        "social_insurance": ["shenzhen_paid"],
+        "extra": [
+          { "key": "identity_options", "value": "any_of",
+            "desc": "须符合其一：本市户籍人员 / 在本市正常缴交社保人员 / 本市登记失业人员 / 在本市公共就业服务机构进行离校两年未就业实名登记的本市高校毕业生" },
+          { "key": "certificate_required", "value": true,
+            "desc": "须取得《深圳市职业技能培训补贴目录》内相应证书；用人单位自主评价发放的职业技能等级证书不适用" }
+        ]
+      },
+      "benefit": {
+        "type": "one_time",
+        "calc_mode": "formula",
+        "formula": "按《深圳市职业技能培训补贴目录》对应标准",
+        "amounts": { "min": 700, "max": 3000 },
+        "unit": "CNY/人",
+        "duration_desc": "已享受同一职业（工种）高等级证书补贴的，不再享受该职业低等级证书补贴",
+        "duration_months_max": null,
+        "district_overrides": {},
+        "year_history": [
+          { "year": 2025, "amounts": { "min": 700, "max": 3600 },
+            "note": "另有资料显示补贴标准为700-3600元，需核实最新目录" }
+        ]
+      },
+      "application_window": {
+        "window_type": "rolling",
+        "start": null,
+        "end": null,
+        "next_expected": "常态受理",
+        "note": "须在证书核发之日起12个月内申请"
+      },
+      "application": {
+        "channel_name": "广东政务服务网深圳（搜索「职业技能提升补贴」）",
+        "channel_url": "https://www.gdzwfw.gov.cn/?region=440300",
+        "submit_via": "self",
+        "materials": ["根据业务系统提示填写相关信息"],
+        "steps": [
+          { "step": 1, "action": "取得目录内职业技能证书", "duration": "" },
+          { "step": 2, "action": "登录广东政务服务网深圳搜索「职业技能提升补贴」按提示申报", "duration": "证书核发之日起12个月内" }
+        ],
+        "processing_time": "",
+        "contact_phone": ["12333"]
+      },
+      "sources": [
+        {
+          "title": "深圳市人社局 港澳就业创业专题 · 职业技能提升补贴",
+          "url": "https://hrss.sz.gov.cn/ztfw/gaojyzt/index.html",
+          "publisher": "深圳市人力资源和社会保障局",
+          "published_date": "2026-08-17",
+          "quote": "补贴标准700元/人—3000元/人。劳动者须在证书核发之日起12个月内，向市人力资源保障部门申请职业技能提升补贴。政策依据：《深圳市职业技能培训补贴办法》（深人社规〔2023〕8号）",
+          "is_primary": true
+        }
+      ],
+      "verification": {
+        "status": "verified",
+        "last_verified": "2026-08-17",
+        "verified_by": "深圳市人社局港澳就业创业专题官方专区",
+        "pending_items": ["补贴上限存在700-3000与700-3600两种表述，需核实最新《深圳市职业技能培训补贴目录》"],
+        "notes": ""
+      },
+      "validity": { "effective_from": "2023-01-01", "effective_until": null, "supersedes": [], "superseded_by": null },
+      "exclusions": { "cannot_combine_with": [], "note": "" }
+    },
+
+    {
+      "id": "sz-loan-018",
+      "name": "创业担保贷款（含财政贴息）",
+      "full_name": "创业担保贷款",
+      "issuing_authority": "深圳市人力资源和社会保障局",
+      "doc_number": "深人社规〔2020〕5号",
+      "doc_title": "深圳市创业担保贷款实施办法",
+      "level": "municipal",
+      "clause_ref": "",
+      "eligible_identities": {
+        "hk_permanent":     { "applicable": true, "note": "" },
+        "hk_non_permanent": { "applicable": true, "note": "" },
+        "mo_permanent":     { "applicable": true, "note": "" },
+        "tw_resident":      { "applicable": "unverified", "note": "该项列于港澳就业创业专题内，台湾居民适用性待核实" }
+      },
+      "conditions": {
+        "employment_types": ["startup"],
+        "work_districts": [],
+        "extra": [
+          { "key": "legal_working_age", "value": true, "desc": "提交贷款申请时在法定劳动年龄内" },
+          { "key": "registered_in_sz", "value": true, "desc": "有具体经营项目、在深圳市行政区域内办理法定登记注册手续" },
+          { "key": "social_months_min", "value": 6,
+            "desc": "借款人需在其法定登记主体内连续正常缴交6个月以上社保费；本市普通高校、职业学校、技工院校在校学生不受社保参保要求限制" },
+          { "key": "no_other_loans", "value": true,
+            "desc": "除助学贷款、扶贫贷款、住房贷款、购车贷款、10万元以下小额消费贷款（含信用卡消费）外，个人借款人及其配偶应没有其他贷款" }
+        ]
+      },
+      "benefit": {
+        "type": "loan",
+        "calc_mode": "formula",
+        "formula": "贷款利率不超过1年期LPR+50BP；本人承担以1年期LPR-150BP计的利息，剩余部分由财政贴息；2023年10月1日及以后新发生的贷款给予放款实际利率50%的财政贴息",
+        "amounts": {
+          "individual_max": 600000,
+          "partnership_per_person_max": 600000,
+          "partnership_total_max": 3000000,
+          "small_micro_enterprise_max": 5000000
+        },
+        "unit": "CNY",
+        "duration_desc": "贷款期限每次最长不超过3年，累计次数不得超过3次",
+        "duration_months_max": 36,
+        "district_overrides": {},
+        "year_history": []
+      },
+      "application_window": {
+        "window_type": "rolling",
+        "start": null,
+        "end": null,
+        "next_expected": "常态受理",
+        "note": ""
+      },
+      "application": {
+        "channel_name": "深圳公共就业服务系统 / 广东政务服务网《创业担保贷款申请办事指南》",
+        "channel_url": "https://hrsspub.sz.gov.cn/ggjyfw/",
+        "submit_via": "self",
+        "materials": ["个人注册立户后按系统提示补充信息", "经办银行和担保机构要求的反担保材料（小微企业）"],
+        "steps": [
+          { "step": 1, "action": "个人或单位在深圳公共就业服务系统注册立户", "duration": "" },
+          { "step": 2, "action": "补充信息并提交申请", "duration": "" }
+        ],
+        "processing_time": "",
+        "contact_phone": ["12333"]
+      },
+      "sources": [
+        {
+          "title": "深圳市人社局 港澳就业创业专题 · 创业担保贷款",
+          "url": "https://hrss.sz.gov.cn/ztfw/gaojyzt/index.html",
+          "publisher": "深圳市人力资源和社会保障局",
+          "published_date": "2026-08-17",
+          "quote": "个人贷款额度最高60万元；合伙经营按符合条件的合伙人每人最高60万元、贷款总额最高300万元实行「捆绑性」贷款；小微企业贷款额度最高500万元；贷款期限每次最长不超过3年，累计次数不得超过3次。",
+          "is_primary": true
+        }
+      ],
+      "verification": {
+        "status": "verified",
+        "last_verified": "2026-08-17",
+        "verified_by": "深圳市人社局港澳就业创业专题官方专区",
+        "pending_items": ["中国台湾居民适用性待核实"],
+        "notes": ""
+      },
+      "validity": { "effective_from": "2020-01-01", "effective_until": null, "supersedes": [], "superseded_by": null },
+      "exclusions": { "cannot_combine_with": [], "note": "" }
+    },
+
+    {
+      "id": "ft-talent-019",
+      "name": "福田英才荟 · 粤港澳台青年人才驿站",
+      "full_name": "福田英才荟粤港澳台青年创新创业支持（人才驿站居住保障）",
+      "issuing_authority": "深圳市福田区人才工作局 / 共青团福田区委员会",
+      "doc_number": "",
+      "doc_title": "关于实施福田英才荟政策的若干措施（2025）",
+      "level": "district",
+      "clause_ref": "粤港澳台青年创新创业载体支持",
+      "eligible_identities": {
+        "hk_permanent":     { "applicable": true, "note": "" },
+        "hk_non_permanent": { "applicable": true, "note": "" },
+        "mo_permanent":     { "applicable": true, "note": "" },
+        "tw_resident":      { "applicable": true, "note": "政策名称即为「粤港澳台青年」，明确适用" }
+      },
+      "conditions": {
+        "education_min": "associate",
+        "employment_types": ["employed"],
+        "work_districts": ["futian"],
+        "no_property_in_sz": true,
+        "extra": [
+          { "key": "carrier_requirement", "value": true,
+            "desc": "所在企业须为粤港澳台青年创新创业载体入驻企业（粤港澳青年创新创业工场（福田）、香港科技大学蓝海湾孵化港、孔雀谷深港创科育成基地或新增认定载体）" },
+          { "key": "company_registration", "value": "futian",
+            "desc": "企业注册地、税务登记和统计关系均在福田区" },
+          { "key": "applicant_condition", "value": "any_of",
+            "desc": "申请人为港澳台人员；或所在企业为港澳台企业（法定代表人或股东为港澳台人员/公司，出资比例不少于10%），每家港澳台企业每年申请人数不超过2人，同等条件下港澳台人员优先" },
+          { "key": "no_housing_benefit", "value": true,
+            "desc": "在本市未拥有任何形式自有住房（含住房建设用地），未领取任何形式租房货币补贴（廉租补贴除外），未享受住房保障优惠政策" },
+          { "key": "clean_record", "value": true, "desc": "诚信守法，无违法犯罪和不良记录" }
+        ]
+      },
+      "benefit": {
+        "type": "housing",
+        "calc_mode": "fixed",
+        "amounts": { "default": null },
+        "unit": "居住权益",
+        "duration_desc": "提供一个月免费短租，或按房租50%的价格长租，单次申请不得超过两年；两种优惠只可选择一种",
+        "duration_months_max": 24,
+        "district_overrides": {},
+        "year_history": []
+      },
+      "application_window": {
+        "window_type": "rolling",
+        "start": null,
+        "end": null,
+        "next_expected": "常态受理",
+        "note": "指南有效期自发布之日起至2026年12月31日，按年度更新"
+      },
+      "application": {
+        "channel_name": "共青团福田区委员会",
+        "channel_url": "https://www.szft.gov.cn/bmxx_qt/qwzzb/ych/rcpy/qnrc/content/post_12149497.html",
+        "submit_via": "employer",
+        "materials": [
+          "人才驿站居住保障申请表",
+          "申请人身份证件（港澳台有效身份证件）",
+          "学历证明",
+          "劳动合同/社保证明/在职证明",
+          "房屋产权信息查询表（深圳不动产登记中心档案管理部窗口1号，福田区上梅林林丰路2号深圳市档案中心D座1层）",
+          "政策性住房信息查询表（同址D座2楼）",
+          "企业法定代表人身份证件或企业商事主体登记信息",
+          "企业营业执照（加盖公章）"
+        ],
+        "steps": [
+          { "step": 1, "action": "申请人提交申请表及相关材料", "duration": "" },
+          { "step": 2, "action": "所在企业及粤港澳台青年创新创业载体运营方复核后递交团区委", "duration": "" },
+          { "step": 3, "action": "团区委审核通过后联系申请人办理入住", "duration": "" }
+        ],
+        "processing_time": "",
+        "contact_phone": ["0755-82536136"],
+        "office_address": "深圳市福田区福民路123号区委大楼1814室（工作日9:00-12:00，14:00-18:00）"
+      },
+      "sources": [
+        {
+          "title": "福田英才荟粤港澳台青年创新创业支持申请指南",
+          "url": "https://www.szft.gov.cn/bmxx_qt/qwzzb/ych/rcpy/qnrc/content/post_12149497.html",
+          "publisher": "深圳市福田区人才工作局",
+          "published_date": "2026-03-30",
+          "quote": "人才驿站：提供一个月免费短租或按房租50%的价格长租，单次申请不得超过两年。申请人可选择申请一个月短租或长租服务，两种优惠只可选择一种，如短租一个月后转长租，需重新申请并补齐上月款项。",
+          "is_primary": true
+        }
+      ],
+      "verification": {
+        "status": "verified",
+        "last_verified": "2026-08-17",
+        "verified_by": "福田区政府官网申请指南全文",
+        "pending_items": [],
+        "notes": "本指南所指支持资金为税前金额，项目受年度财政预算限制，支持标准存在调整可能"
+      },
+      "validity": {
+        "effective_from": "2026-03-30",
+        "effective_until": "2026-12-31",
+        "supersedes": [],
+        "superseded_by": null,
+        "note": "按年度更新"
+      },
+      "exclusions": {
+        "cannot_combine_with": ["qh-live-002"],
+        "note": "与其他租房货币补贴、住房保障优惠政策互斥"
+      }
+    }
+
+  ]
+}

@@ -1,0 +1,178 @@
+name: 政策巡检
+
+# 分层巡检频率 —— 政策发布有节奏，不必天天跑。
+# 注意 cron 用 UTC，北京时间 = UTC + 8。
+on:
+  schedule:
+    # 每周一 09:00 CST 查申报窗口（唯一「错过就等一年」的东西）
+    - cron: '0 1 * * 1'
+    # 每月 1 日 09:00 CST 全量体检
+    - cron: '0 1 1 * *'
+    # 每季度末月 28 日 09:00 CST 查链接有效性
+    - cron: '0 1 28 3,6,9,12 *'
+    # 1 月 2 日 + 3 月 15 日：个税补贴窗口（1/1 开放、3/31 截止）加密
+    - cron: '0 1 2 1 *'
+    - cron: '0 1 15 3 *'
+    # 7 月 25 日 + 8 月 5 日：前海十二条（7 月底发指南、8 月初开窗）加密
+    - cron: '0 1 25 7 *'
+    - cron: '0 1 5 8 *'
+  workflow_dispatch:
+    inputs:
+      scope:
+        description: 巡检范围
+        type: choice
+        default: all
+        options: [all, window, terms, links]
+      only:
+        description: 只查指定 policy_id（逗号分隔，留空=全部）
+        type: string
+        default: ''
+
+# 需要写权限来推分支和开 PR
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: patrol
+  cancel-in-progress: false
+
+jobs:
+  patrol:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # 按触发的 cron 决定巡检范围
+      - name: 决定巡检范围
+        id: scope
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "value=${{ inputs.scope }}" >> "$GITHUB_OUTPUT"
+            echo "only=${{ inputs.only }}" >> "$GITHUB_OUTPUT"
+          else
+            case "${{ github.event.schedule }}" in
+              '0 1 * * 1')            echo "value=window" >> "$GITHUB_OUTPUT" ;;
+              '0 1 28 3,6,9,12 *')    echo "value=links"  >> "$GITHUB_OUTPUT" ;;
+              *)                      echo "value=all"    >> "$GITHUB_OUTPUT" ;;
+            esac
+            echo "only=" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: 校验政策数据格式
+        run: |
+          python -c "
+          import json,sys
+          try:
+              d=json.load(open('data/policies.json'))
+          except json.JSONDecodeError as e:
+              print(f'::error::policies.json 格式错误：{e}')
+              sys.exit(1)
+          print(f'数据版本 {d[\"meta\"][\"data_version\"]}，政策 {len(d[\"policies\"])} 条')
+          "
+
+      - name: 运行巡检
+        id: patrol
+        continue-on-error: true       # 巡检异常不阻断后续通知
+        run: |
+          ARGS="--scope ${{ steps.scope.outputs.value }}"
+          if [ -n "${{ steps.scope.outputs.only }}" ]; then
+            ARGS="$ARGS --only ${{ steps.scope.outputs.only }}"
+          fi
+          python tools/patrol.py $ARGS --max-requests 80
+
+      - name: 汇总到运行摘要
+        if: always()
+        run: |
+          if [ -f reports/patrol-latest.md ]; then
+            cat reports/patrol-latest.md >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo '巡检未产出报告，请检查上一步日志。' >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: 生成 PR 提案
+        id: propose
+        if: steps.patrol.outputs.has_changes == 'true'
+        run: python tools/propose.py
+
+      - name: 提交变更并开 PR
+        if: steps.patrol.outputs.has_changes == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH="patrol/${{ steps.patrol.outputs.stamp }}"
+          git config user.name  "policy-patrol[bot]"
+          git config user.email "policy-patrol@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+
+          # 只提交需要持久化的：政策数据 + 页面快照。
+          # 巡检报告已被 .gitignore 排除（Actions 另存为 artifact），
+          # PR 正文由 --body-file 直接读取，也不需要进 git。
+          git add data/policies.json data/snapshots
+          if git diff --cached --quiet; then
+            echo "没有文件变更，跳过开 PR"
+            exit 0
+          fi
+
+          git commit -m "政策巡检：${{ steps.propose.outputs.policy_count }} 条政策来源变动待核实
+
+          巡检范围：${{ steps.scope.outputs.value }}
+          标为待核实：${{ steps.propose.outputs.flagged_count }} 条
+
+          本提交不猜测政策新数值，仅标记待核实以保护用户。
+          请打开 PR 正文中的官方链接核对原文后填正确值。"
+
+          git push -u origin "$BRANCH"
+
+          gh pr create \
+            --title "${{ steps.propose.outputs.pr_title }}" \
+            --body-file .github/pr-body.md \
+            --label "政策巡检" \
+            --base "${{ github.ref_name }}" \
+            --head "$BRANCH"
+
+      # 巡检失败或被安全阀中止时，开 issue 通知（不能静默失败）
+      - name: 异常时开 issue 通知
+        if: steps.patrol.outcome == 'failure' || steps.patrol.outputs.aborted == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TITLE="巡检异常 · ${{ steps.scope.outputs.value }} · $(date -u +%Y-%m-%d)"
+          BODY=$(cat <<'EOF'
+          自动巡检未正常完成。
+
+          | 项 | 值 |
+          |---|---|
+          | 巡检范围 | ${{ steps.scope.outputs.value }} |
+          | 状态 | ${{ steps.patrol.outputs.status }} |
+          | 是否被安全阀中止 | ${{ steps.patrol.outputs.aborted }} |
+          | 实际请求次数 | 见运行日志 |
+
+          **可能原因**
+          - 政府站点限流或临时不可用（安全阀会在连续 6 次失败后中止，这是预期保护行为）
+          - 网络异常
+          - 脚本 bug
+
+          **排查方式**
+          1. 看本次 run 的日志与 Summary
+          2. 本地单条重跑：`python3 tools/patrol.py --only <policy_id>`
+          3. 用 curl 验证链接真伪：`curl -sS -o /dev/null -w "%{http_code}\n" <url>`
+
+          若是限流导致，隔一天重跑通常即可恢复，不必改代码。
+          EOF
+          )
+          gh issue create --title "$TITLE" --body "$BODY" --label "巡检异常" || true
+
+      - name: 上传报告存档
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: patrol-report-${{ steps.patrol.outputs.stamp || github.run_id }}
+          path: reports/
+          retention-days: 90

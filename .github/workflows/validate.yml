@@ -1,0 +1,183 @@
+name: 数据校验
+
+# 任何改动政策数据或代码的 PR 都必须过这道校验。
+# 目的：防止 JSON 语法错误、必填字段缺失、来源链接缺失这类问题被合并上线。
+on:
+  pull_request:
+    paths:
+      - 'data/**'
+      - 'src/**'
+      - 'tools/**'
+  push:
+    branches: [main, master]
+    paths:
+      - 'data/**'
+      - 'src/**'
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: JSON 语法与结构校验
+        run: |
+          python - <<'PY'
+          import json, sys
+
+          errs, warns = [], []
+          try:
+              d = json.load(open('data/policies.json'))
+          except json.JSONDecodeError as e:
+              print(f'::error file=data/policies.json::JSON 语法错误：{e}')
+              sys.exit(1)
+
+          if 'meta' not in d:
+              errs.append('缺少 meta')
+          if not isinstance(d.get('policies'), list) or not d['policies']:
+              errs.append('policies 必须是非空数组')
+
+          ids = set()
+          REQUIRED = ['id', 'name', 'issuing_authority', 'level',
+                      'eligible_identities', 'conditions', 'benefit',
+                      'application_window', 'application', 'sources',
+                      'verification', 'validity']
+          IDENTITIES = ['hk_permanent', 'hk_non_permanent', 'mo_permanent', 'tw_resident']
+
+          for i, p in enumerate(d.get('policies', [])):
+              tag = p.get('id', f'index{i}')
+
+              for k in REQUIRED:
+                  if k not in p:
+                      errs.append(f'{tag}: 缺少必填字段 {k}')
+
+              if p.get('id') in ids:
+                  errs.append(f'{tag}: policy id 重复')
+              ids.add(p.get('id'))
+
+              # 四类身份必须逐个标注，不能漏
+              ei = p.get('eligible_identities', {})
+              for k in IDENTITIES:
+                  if k not in ei:
+                      errs.append(f'{tag}: eligible_identities 缺少 {k}')
+                  elif ei[k].get('applicable') not in (True, False, 'unverified'):
+                      errs.append(f'{tag}: {k}.applicable 只能是 true/false/"unverified"，'
+                                  f'实际为 {ei[k].get("applicable")!r}')
+
+              # 来源必须有，且已核实的必须有一手来源+原文引句
+              srcs = p.get('sources', [])
+              if not srcs:
+                  errs.append(f'{tag}: sources 不能为空')
+              vs = p.get('verification', {}).get('status')
+              if vs == 'verified':
+                  prim = [s for s in srcs if s.get('is_primary')]
+                  if not prim:
+                      errs.append(f'{tag}: 标为 verified 但没有 is_primary 来源')
+                  for s in prim:
+                      if not s.get('quote'):
+                          errs.append(f'{tag}: 一手来源缺少 quote 原文引句')
+                      if not str(s.get('url', '')).startswith('http'):
+                          errs.append(f'{tag}: 一手来源 url 无效')
+                  if not p['verification'].get('last_verified'):
+                      errs.append(f'{tag}: 标为 verified 但缺少 last_verified')
+
+              if vs not in ('verified', 'unverified', 'outdated', 'superseded'):
+                  errs.append(f'{tag}: verification.status 取值非法：{vs!r}')
+
+              # 术语规范：不得出现把港澳台与国家并列的表述
+              blob = json.dumps(p, ensure_ascii=False)
+              for pat in ['香港国', '澳门国', '台湾国', '台湾政府', '中华民国']:
+                  if pat in blob:
+                      errs.append(f'{tag}: 出现不规范表述「{pat}」，须改为中国香港/中国澳门/中国台湾')
+
+          # 汇总
+          for e in errs:
+              print(f'::error file=data/policies.json::{e}')
+          for w in warns:
+              print(f'::warning file=data/policies.json::{w}')
+
+          verified = sum(1 for p in d['policies']
+                         if p.get('verification', {}).get('status') == 'verified')
+          print(f'\n政策 {len(d["policies"])} 条 | 已核实 {verified} | '
+                f'数据版本 {d["meta"].get("data_version")}')
+
+          if errs:
+              print(f'\n校验失败：{len(errs)} 个问题')
+              sys.exit(1)
+          print('校验通过')
+          PY
+
+      - name: 脚本语法检查
+        run: |
+          python -m py_compile tools/patrol.py tools/propose.py tools/confirm.py
+          node --check src/matcher.js
+          node --check src/loader.js
+          echo '脚本语法正确'
+
+      - name: 匹配引擎回归测试
+        run: |
+          node - <<'JS'
+          const fs = require('fs');
+          const { match } = require('./src/matcher.js');
+          const { loadPolicies } = require('./src/loader.js');
+
+          const rd = p => JSON.parse(fs.readFileSync(p, 'utf8'));
+          const r = loadPolicies(rd, { primary: 'data/policies.json' });
+          if (!r.ok) { console.error('数据加载失败'); process.exit(1); }
+
+          // 四类身份各跑一遍，确保都能匹配到政策（台湾居民曾经匹配不到任何项）
+          const cases = [
+            ['hk_permanent', 'qianhai', 'qianhai_paid'],
+            ['hk_non_permanent', 'futian', 'shenzhen_paid'],
+            ['mo_permanent', 'nanshan', 'shenzhen_paid'],
+            ['tw_resident', 'futian', 'shenzhen_paid'],
+          ];
+          let fail = 0;
+          for (const [id, dist, si] of cases) {
+            const m = match(r.data, {
+              identity: id, age: 30, education: 'bachelor', employment: 'employed',
+              work_district: dist, social_insurance: si, nationality_cn: true,
+              has_property_in_sz: false, talent_recognized: false,
+              years_since_graduation: 3,
+            });
+            const total = m.summary.count_strong + m.summary.count_conditional;
+            console.log(`${id.padEnd(18)} 强匹配 ${m.summary.count_strong} · 需前置 ${m.summary.count_conditional} · 待核实 ${m.summary.count_unverified}`);
+            if (total === 0) {
+              console.error(`::error::${id} 匹配不到任何政策，疑似身份口径回归`);
+              fail++;
+            }
+          }
+          if (fail) process.exit(1);
+          console.log('\n匹配引擎回归测试通过');
+          JS
+
+      - name: 兜底机制测试
+        run: |
+          node - <<'JS'
+          const fs = require('fs');
+          const { loadPolicies } = require('./src/loader.js');
+          const rd = p => JSON.parse(fs.readFileSync(p, 'utf8'));
+
+          // 损坏数据时必须能回退到备份，不能白屏
+          fs.writeFileSync('/tmp/broken.json', '{ "policies": [ BROKEN');
+          const r = loadPolicies(rd, {
+            primary: '/tmp/broken.json',
+            versionsList: ['data/policies.json'],
+          });
+          if (!r.ok || !r.degraded) {
+            console.error('::error::兜底机制失效：损坏数据未回退到备份');
+            process.exit(1);
+          }
+          console.log('兜底测试通过：损坏数据已回退，degraded=' + r.degraded);
+          JS

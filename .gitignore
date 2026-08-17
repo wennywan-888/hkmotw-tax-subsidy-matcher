@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Node
+node_modules/
+npm-debug.log*
+
+# 系统
+.DS_Store
+Thumbs.db
+
+# 编辑器
+.vscode/
+.idea/
+*.swp
+
+# 巡检报告不进 git —— 属于运行期产物，Actions 已上传为 artifact 存档 90 天。
+# patrol-latest.* 由巡检当次生成，在同一个 CI job 内被 propose.py 消费，无需持久化。
+reports/*.md
+reports/*.json
+
+# PR 正文是每次巡检临时生成的，不需要长期保留
+.github/pr-body.md
+
+# 本地确认工具产生的版本备份不进 git —— 云端用 git 历史本身做版本管理
+data/versions/
