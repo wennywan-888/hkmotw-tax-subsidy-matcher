@@ -131,6 +131,48 @@
   .disclaimer{font-size:12px;color:var(--sub);background:#fff;border:1px dashed var(--line);
               border-radius:10px;padding:12px;margin-top:14px}
   footer{text-align:center;font-size:12px;color:var(--sub);padding:20px 0}
+
+  /* ===== 合规与责任边界（第 6 轮新增）===== */
+
+  /* 首屏责任边界条 —— 用户在看到任何金额之前就该读到 */
+  .notice-bar{background:var(--warn-bg);border:1px solid #f0d9a8;border-radius:10px;
+              padding:11px 14px;font-size:12.5px;color:#7a5a20;line-height:1.65;margin-bottom:14px}
+  .notice-bar b{color:#5f4415}
+
+  /* 待核实区块整体隔离：加斜纹底，与已核实条目在视觉上明确分开，
+     避免用户扫读时把待核实条目误当作确定可申领 */
+  .unv-zone{border:1.5px dashed #d9a94e;border-radius:12px;padding:4px 12px 12px;
+            margin-top:16px;background:repeating-linear-gradient(45deg,
+            #fffdf7,#fffdf7 9px,#fdf6e6 9px,#fdf6e6 18px)}
+  .unv-zone .group-title{color:#8a5f14}
+  .unv-zone-head{font-size:12px;color:#8a5f14;background:#fdf3dd;border-radius:8px;
+                 padding:9px 11px;margin:12px 0 4px;line-height:1.6}
+  .unv-zone-head b{display:block;margin-bottom:3px}
+
+  /* 估算类金额与确定额度做视觉区分 */
+  .amount.est{color:#7a5a20}
+  .est-tag{font-size:11px;font-weight:600;background:var(--warn-bg);color:var(--warn);
+           border-radius:5px;padding:2px 7px;margin-left:8px;vertical-align:middle;
+           letter-spacing:.02em}
+  .est-note{font-size:12px;color:#7a5a20;background:var(--warn-bg);border-radius:8px;
+            padding:8px 10px;margin-top:7px;line-height:1.65}
+
+  /* 每张卡片底部的核实信息条 */
+  .verify-bar{font-size:11.5px;color:var(--sub);border-top:1px dotted var(--line);
+              margin-top:10px;padding-top:8px;display:flex;flex-wrap:wrap;gap:4px 14px}
+  .verify-bar .stale{color:var(--warn);font-weight:600}
+
+  /* 反馈与隐私 */
+  .compliance{background:#fff;border:1px solid var(--line);border-radius:10px;
+              padding:14px;margin-top:14px;font-size:12px;color:var(--sub);line-height:1.75}
+  .compliance h4{margin:0 0 8px;font-size:13px;color:var(--fg)}
+  .compliance ul{margin:6px 0 0;padding-left:18px}
+  .compliance li{margin:3px 0}
+  .compliance a{color:var(--accent)}
+  .feedback-btn{display:inline-block;font-size:12px;border:1px solid var(--line);
+                background:#fff;border-radius:8px;padding:7px 13px;margin-top:10px;
+                cursor:pointer;color:var(--fg);text-decoration:none}
+  .feedback-btn:hover{border-color:var(--accent);color:var(--accent)}
 </style>
 </head>
 <body>
@@ -146,6 +188,16 @@
   </header>
 
   <div class="notice" id="globalNotice"></div>
+
+  <!-- 责任边界条：放在表单之前，确保用户在看到任何金额之前就读到这段。
+       放页脚是不够的——大多数人不会滚到底。 -->
+  <div class="notice-bar">
+    <b>请先了解：本工具是信息导航，不是申领承诺。</b>
+    匹配结果基于你填写的信息与已收录的政策条款推算，<b>不代表你一定符合申领条件</b>。
+    补贴能否申领、金额多少，最终由经办部门依据官方最新文件和你的实际材料审定。
+    政策与申报窗口逐年调整，申报前请务必以官方最新指南和经办部门口径为准，
+    可致电 <b>12333</b> 咨询。
+  </div>
 
   <div class="layout">
     <div class="panel">
@@ -232,16 +284,51 @@
         <div class="empty">填写左侧信息后点击匹配，也可以先点上面的示例快速试一下。</div>
       </div>
       <div class="disclaimer" id="disclaimer">
-        本工具为信息导航参考，<b>不构成申领承诺</b>。一切以官方最新文件与经办部门口径为准。
-        申报窗口逐年调整，请以当年最新指南为准。个税补贴金额为粗略估算，
-        未考虑专项附加扣除、年终奖单独计税等因素，实际以税务机关核算为准。
-        咨询电话 12333。
+        <b>免责说明</b><br>
+        本工具为信息导航参考，<b>不构成申领承诺，也不是法律或税务意见</b>。
+        一切以官方最新文件与经办部门口径为准。<br>
+        · 申报窗口逐年调整，请以当年最新指南为准；已过窗口的政策次年是否续办，须看官方公告。<br>
+        · 个税补贴金额为<b>粗略估算</b>，未考虑专项附加扣除、年终奖单独计税、
+        经营所得与劳务报酬合并计税等因素，实际以税务机关核算与财政部门审定为准。<br>
+        · 标注「待核实」的条目尚未取得官方一手来源确认，<b>请勿据此安排申报</b>。<br>
+        · 若因本工具信息与官方文件不一致造成的损失，本站不承担责任；
+        发现信息有误请通过下方入口反馈。<br>
+        咨询电话 <b>12333</b>（深圳人社）。
+      </div>
+
+      <div class="compliance">
+        <h4>数据来源与更新</h4>
+        每条政策都附官方一手来源链接与原文引句，可点开核对。
+        数据版本与最后核实日期见页面顶部，单条政策的核实日期在各卡片底部。
+        <ul>
+          <li>超过 <b>180 天</b>未核实的条目，页面会自动标注「信息可能过时」</li>
+          <li>政策数据与代码分离，全部条目可在开源仓库中审阅</li>
+        </ul>
+
+        <h4 style="margin-top:12px">隐私</h4>
+        <ul>
+          <li>本站<b>不需注册、不收集任何个人信息</b></li>
+          <li>你填写的身份、学历、收入等信息<b>只在你的浏览器内存中参与计算</b>，
+              不上传、不落盘、不写入 Cookie 或本地存储</li>
+          <li>关闭或刷新页面，填写内容即消失</li>
+          <li>导出的日历文件与 PDF 在你本机生成，不经过任何服务器</li>
+        </ul>
+
+        <h4 style="margin-top:12px">发现信息有误？</h4>
+        政策变动频繁，你的反馈是最快的纠错途径。反馈时请附上政策名称与官方文件链接。
+        <br>
+        <a class="feedback-btn" id="feedbackBtn"
+           href="https://github.com/wennywan-888/hkmotw-tax-subsidy-matcher/issues/new"
+           target="_blank" rel="noopener">反馈政策有误</a>
       </div>
     </div>
   </div>
 
   <footer>
-    本站不收集任何个人信息，所有匹配计算在你的浏览器本地完成。
+    本站为个人开发的公益信息工具，与任何政府部门无隶属关系。<br>
+    所有匹配计算在你的浏览器本地完成，不收集任何个人信息。<br>
+    <a href="https://github.com/wennywan-888/hkmotw-tax-subsidy-matcher"
+       target="_blank" rel="noopener">开源代码与政策数据</a>
   </footer>
 </div>
 

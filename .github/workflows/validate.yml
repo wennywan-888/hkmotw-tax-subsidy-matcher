@@ -95,7 +95,9 @@ jobs:
               if vs not in ('verified', 'unverified', 'outdated', 'superseded'):
                   errs.append(f'{tag}: verification.status 取值非法：{vs!r}')
 
-              # 术语规范：不得出现把港澳台与国家并列的表述
+              # 术语规范的完整检查交给 tools/check_terms.py（下一个 step），
+              # 那里覆盖全站文件、并列表述、英文表述与身份标签。
+              # 这里只留最粗的兜底，确保即使那个 step 被跳过也不至于漏掉硬违规。
               blob = json.dumps(p, ensure_ascii=False)
               for pat in ['香港国', '澳门国', '台湾国', '台湾政府', '中华民国']:
                   if pat in blob:
@@ -117,6 +119,13 @@ jobs:
               sys.exit(1)
           print('校验通过')
           PY
+
+      # 涉港澳台术语规范门禁。
+      # 单独一个 step 是刻意的：这类问题不是「数据格式错」，
+      # 而是表述红线，失败原因要一眼看清，不该混在数据校验里。
+      - name: 术语规范检查
+        run: |
+          python3 tools/check_terms.py
 
       - name: 脚本语法检查
         run: |

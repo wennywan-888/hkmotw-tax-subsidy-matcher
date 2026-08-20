@@ -28,6 +28,17 @@ jobs:
         with:
           node-version: '20'
 
+      # 术语检查是 Python 脚本。ubuntu-latest 自带 python3，
+      # 但显式声明版本更稳妥——runner 镜像换代时不至于突然跑不动。
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # 术语门禁放在最前面：数据算错还能改，涉港澳台表述出错是原则问题，
+      # 绝不能上线。检查失败即中止，不部署。
+      - name: 术语规范检查
+        run: python3 tools/check_terms.py
+
       # 部署前守门：数据坏了直接失败，不上线
       - name: 数据校验
         run: |

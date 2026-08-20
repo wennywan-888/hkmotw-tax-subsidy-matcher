@@ -81,8 +81,33 @@
 
     fillOptions();
     renderExamples();
+    setupFeedback();
     $('matchBtn').disabled = false;
     $('matchBtn').addEventListener('click', run);
+  }
+
+  /** 页脚总反馈入口：预填数据版本，省得用户自己找 */
+  function setupFeedback() {
+    const btn = $('feedbackBtn');
+    if (!btn) return;
+    const m = (DATA && DATA.meta) || {};
+    const body = [
+      '## 问题描述',
+      '',
+      '（哪条政策、哪一项信息与官方文件不符？）',
+      '',
+      '## 官方依据',
+      '',
+      '（请附官方文件链接或文号，这是最重要的部分）',
+      '',
+      '---',
+      '',
+      `数据版本：v${m.data_version || '未知'}（截至 ${m.data_as_of || '未知'}）`,
+    ].join('\n');
+    btn.setAttribute('href',
+      'https://github.com/wennywan-888/hkmotw-tax-subsidy-matcher/issues/new'
+      + '?title=' + encodeURIComponent('政策信息反馈')
+      + '&body=' + encodeURIComponent(body));
   }
 
   function fillOptions() {
@@ -216,8 +241,19 @@
       h += r.conditional.map(i => card(i, 'cond')).join('');
     }
     if (r.unverified.length) {
-      h += `<div class="group-title">待核实 · ${r.unverified.length} 项（官方依据尚未确认，仅供参考）</div>`;
+      // 待核实条目整体包进隔离区块。视觉上明确分开是刻意的——
+      // 用户扫读结果时很容易把待核实条目当成确定可申领，
+      // 只靠一个小徽标不足以阻止误读。
+      h += '<div class="unv-zone">';
+      h += `<div class="group-title">待核实 · ${r.unverified.length} 项</div>`;
+      h += `<div class="unv-zone-head">
+              <b>以下条目尚未取得官方一手来源确认</b>
+              这些政策可能存在、也可能已调整或不适用于你的身份。
+              <b style="display:inline">请勿据此安排申报</b>，
+              务必先致电 12333 或经办部门确认后再行动。
+            </div>`;
       h += r.unverified.map(i => card(i, 'unv')).join('');
+      h += '</div>';
     }
     if (r.nearMiss.length) h += renderNear(r.nearMiss);
     if (r.exclusion_warnings.length) h += renderExcl(r.exclusion_warnings);
@@ -276,9 +312,17 @@
     // 金额
     if (item.tax_estimate) {
       const t = item.tax_estimate;
-      h += `<div class="amount">${money(t.rebate)}</div>
-            <div class="reason">预估应纳税所得额 ${money(t.taxable)}，实缴个税约 ${money(t.paid)}，
-            超过 15% 的部分可申请补贴。${esc(t.disclaimer)}</div>`;
+      // 个税补贴是全站唯一「我们自己算出来的数」，其余都是政策明文额度。
+      // 所以必须在金额旁边就标明是估算，不能等用户滚到页脚才看到说明。
+      h += `<div class="amount est">${money(t.rebate)}<span class="est-tag">粗略估算</span></div>
+            <div class="reason">按你选择的年收入区间推算：预估应纳税所得额 ${money(t.taxable)}，
+            实缴个税约 ${money(t.paid)}，超过应纳税所得额 15% 的部分可申请补贴。</div>
+            <div class="est-note">
+              此数为<b>量级参考，不是可申领金额</b>。未考虑专项附加扣除、年终奖单独计税、
+              多处取得收入合并计税等因素，也未考虑你实际的纳税记录。
+              实际补贴以税务机关核算的已缴税额与财政部门审定结果为准，
+              差异可能较大。${t.disclaimer ? esc(t.disclaimer) : ''}
+            </div>`;
     } else if (b.value) {
       h += `<div class="amount">${esc(pretty(b.display))}</div>`;
     } else if (b.display || b.formula) {
@@ -427,8 +471,98 @@
       if (prim) h += `<div class="quote">原文：${esc(prim.quote.slice(0, 200))}</div>`;
     }
 
+    // 卡片底部核实信息条 —— 让每条结论的时效性可追溯到具体日期。
+    // 顶部的全站版本号只说明「整份数据什么时候发布的」，
+    // 单条政策的核实日期可能早得多，这个差异对用户是有意义的。
+    h += renderVerifyBar(p);
+
     h += '</div>';
     return h;
+  }
+
+  /** 每条政策的核实信息：文号 / 有效期 / 最后核实日期 / 过期提示 */
+  function renderVerifyBar(p) {
+    const bits = [];
+    const v = p.verification || {};
+
+    if (p.doc_number) bits.push(`文号 ${esc(p.doc_number)}`);
+    else if (p.issuing_authority) bits.push(esc(p.issuing_authority));
+
+    // 政策自身的有效期。已过期必须警示；即将到期只在 180 天内提示——
+    // 阈值定 365 天会让大部分政策常年挂警示，用户很快就对警示脱敏，
+    // 反而看不见真正紧急的那几条。
+    const val = p.validity || {};
+    if (val.effective_until) {
+      const until = new Date(val.effective_until);
+      const days = Math.ceil((until - new Date()) / 86400000);
+      if (days < 0) {
+        bits.push(`<span class="stale">政策已于 ${esc(val.effective_until)} 到期，`
+          + '是否续期须看官方公告</span>');
+      } else if (days <= 180) {
+        bits.push(`<span class="stale">政策有效期至 ${esc(val.effective_until)}`
+          + `（剩 ${days} 天，续期情况待官方公告）</span>`);
+      } else {
+        bits.push(`政策有效期至 ${esc(val.effective_until)}`);
+      }
+    }
+
+    const st = p._staleness;
+    if (v.last_verified) {
+      if (st && st.level === 'stale') {
+        bits.push(`<span class="stale">最后核实 ${esc(v.last_verified)}`
+          + (st.days != null ? `（已 ${st.days} 天，可能已过时）` : '（可能已过时）')
+          + '</span>');
+      } else {
+        bits.push(`最后核实 ${esc(v.last_verified)}`);
+      }
+    } else {
+      bits.push('<span class="stale">最后核实日期缺失</span>');
+    }
+
+    if (!bits.length) return '';
+
+    // 针对单条政策的纠错入口。自动带上政策名、ID、数据版本与来源链接——
+    // 让用户描述"哪条政策哪里错了"的成本很高，多数人会因此放弃反馈。
+    // 预填这些上下文后，用户只需补一句"金额已改成 XXXX，见附件"。
+    const feedback = buildFeedbackUrl(p);
+    bits.push(`<a href="${feedback}" target="_blank" rel="noopener"
+                  style="color:var(--sub);text-decoration:underline">这条有误？</a>`);
+
+    return `<div class="verify-bar">${bits.map(b => `<span>${b}</span>`).join('')}</div>`;
+  }
+
+  /** 生成预填了政策上下文的 GitHub Issue 链接 */
+  function buildFeedbackUrl(p) {
+    const repo = 'https://github.com/wennywan-888/hkmotw-tax-subsidy-matcher/issues/new';
+    const ver = (DATA && DATA.meta && DATA.meta.data_version) || '未知';
+    const asOf = (DATA && DATA.meta && DATA.meta.data_as_of) || '未知';
+    const primary = (p.sources || []).find(s => s.is_primary);
+
+    const title = `政策信息有误：${p.name}`;
+    const body = [
+      '## 哪里有误',
+      '',
+      '（请描述：金额 / 条件 / 申报窗口 / 适用身份 哪一项与官方文件不符）',
+      '',
+      '## 官方依据',
+      '',
+      '（请附上官方文件链接或文号，这是最重要的部分）',
+      '',
+      '---',
+      '',
+      '以下为系统自动填写，无需修改：',
+      '',
+      `- 政策 ID：\`${p.id}\``,
+      `- 政策名称：${p.name}`,
+      `- 数据表文号：${p.doc_number || '（无）'}`,
+      `- 数据表现值来源：${primary ? primary.url : '（无一手来源）'}`,
+      `- 最后核实日期：${(p.verification || {}).last_verified || '（缺失）'}`,
+      `- 数据版本：v${ver}（截至 ${asOf}）`,
+    ].join('\n');
+
+    return repo
+      + '?title=' + encodeURIComponent(title)
+      + '&body=' + encodeURIComponent(body);
   }
 
   function renderNothing(r) {
