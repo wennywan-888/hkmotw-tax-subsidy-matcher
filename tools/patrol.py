@@ -461,13 +461,54 @@ TYPE_LABEL = {
 }
 
 
-def write_report(findings, meta, scope, stamp):
+def detect_network_failure(findings, total_sources):
+    """
+    区分「政策真下架」和「本机/本节点访问不了」。
+
+    背景（2026-08-20 实测）：在 GitHub Actions 境外节点跑巡检，
+    22 条来源全部报 link_dead，但本地 curl 全返回 200。
+    如果照单报成「链接失效」，会把一批已核实政策错误降级为待核实——
+    噪音淹没真实信号，比不巡检更糟。
+
+    判据：失效数 ≥ 3 且失效率 > 60%。单条挂掉是政策下架，
+    集体挂掉是网络问题——政府网站不会同时下架所有文件。
+
+    返回 (是否网络异常, 失效数, 失效率)
+    """
+    dead = [f for f in findings if f["type"] == "link_dead"]
+    if not dead or not total_sources:
+        return False, len(dead), 0.0
+    ratio = len(dead) / total_sources
+    return (len(dead) >= 3 and ratio > 0.6), len(dead), ratio
+
+
+def write_report(findings, meta, scope, stamp, total_sources=0):
     REPORT_DIR.mkdir(exist_ok=True)
     md = REPORT_DIR / f"patrol-{stamp}.md"
     js = REPORT_DIR / f"patrol-{stamp}.json"
 
+    # 先判定是否为网络环境问题。是的话把 link_dead 全部改判，
+    # 避免下游 propose.py 把这些条目标成「待核实」污染正式数据。
+    net_fail, dead_n, dead_ratio = detect_network_failure(findings, total_sources)
+    if net_fail:
+        for f in findings:
+            if f["type"] == "link_dead":
+                f["type"] = "network_unreachable"
+                f["severity"] = "info"
+                f["confidence"] = "high"
+                f["detail"] = (
+                    f"本次巡检有 {dead_n}/{total_sources}（{dead_ratio:.0%}）来源无法访问，"
+                    "判定为网络环境问题，非政策下架。"
+                    "政府网站不会同时下架全部文件。"
+                )
+                f["suggested_action"] = (
+                    "不要据此修改政策数据。请在能正常访问国内政府站点的网络环境下重跑巡检"
+                    "（本地 macOS 直接跑 tools/patrol.py 即可）。"
+                )
+
     findings.sort(key=lambda f: (SEV_ORDER.get(f["severity"], 9), f["policy_id"]))
-    actionable = [f for f in findings if f["type"] != "snapshot_created"]
+    actionable = [f for f in findings
+                  if f["type"] not in ("snapshot_created", "network_unreachable")]
 
     lines = [
         f"# 政策巡检报告 {stamp}",
@@ -480,6 +521,29 @@ def write_report(findings, meta, scope, stamp):
         "",
         "---",
         "",
+    ]
+
+    if net_fail:
+        lines += [
+            "## 🌐 本次巡检判定为网络环境异常",
+            "",
+            f"有 **{dead_n}/{total_sources}（{dead_ratio:.0%}）** 来源无法访问。",
+            "政府网站不会同时下架全部文件，因此判定为当前网络访问不到国内政府站点，"
+            "**不是政策下架**。",
+            "",
+            "这些条目已改判为 `network_unreachable`，**不计入待处理项，不会影响政策数据**。",
+            "",
+            "**处理方式**：在能正常访问 `*.sz.gov.cn` 的网络环境下重跑（本机直接跑即可）：",
+            "",
+            "```bash",
+            "python3 tools/patrol.py",
+            "```",
+            "",
+            "---",
+            "",
+        ]
+
+    lines += [
         "## 汇总",
         "",
         f"- 发现待处理项：**{len(actionable)}** 条",
@@ -632,7 +696,11 @@ def main():
             })
 
     stamp = now_cst().strftime("%Y-%m-%d-%H%M")
-    md, js, n = write_report(all_findings, data["meta"], args.scope, stamp)
+    # 分母必须是「实际尝试访问的次数」，不是「本该访问的来源总数」。
+    # 安全阀中止时后者会虚高，导致失效率被低估、判不出网络异常。
+    attempted = max(_stats["requests"], 1)
+    md, js, n = write_report(all_findings, data["meta"], args.scope, stamp,
+                             total_sources=attempted)
 
     log("")
     log(f"巡检完成：待处理 {n} 条，异常 {failed} 条，"
