@@ -6,6 +6,11 @@
 
 打开网址即用，无需注册。
 
+> **In English** — A subsidy and tax-incentive matcher for residents of Hong Kong, China /
+> Macao, China / Taiwan, China who work in Shenzhen. Enter your profile, employer, port and
+> district to discover eligible subsidies and district-specific IIT benefits, with
+> application steps and deadline reminders.
+
 ---
 
 ## 当前状态
