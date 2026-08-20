@@ -7,8 +7,10 @@
 (function () {
   const { match } = window.PolicyMatcher;
   const { loadPoliciesAsync, badgesFor } = window.PolicyLoader;
+  const { buildICS, downloadICS } = window.PolicyCalendar;
 
   let DATA = null;
+  let LAST = null;   // 最近一次匹配结果，供日历导出使用
 
   const $ = id => document.getElementById(id);
   const esc = s => String(s ?? '').replace(/[&<>"']/g,
@@ -161,7 +163,40 @@
     if (!DATA) return;
     const p = profile();
     const r = match(DATA, p, new Date());
+    LAST = r;
     $('results').innerHTML = renderAll(r, p);
+    bindActions();
+  }
+
+  /** 结果渲染后绑定日历导出等交互 */
+  function bindActions() {
+    const all = $('exportAll');
+    if (all) all.addEventListener('click', () => exportCalendar(null));
+
+    document.querySelectorAll('[data-ical]').forEach(btn => {
+      btn.addEventListener('click', () => exportCalendar(btn.getAttribute('data-ical')));
+    });
+  }
+
+  /**
+   * 导出日历
+   * @param {string|null} policyId 传 null 导出全部
+   */
+  function exportCalendar(policyId) {
+    if (!LAST) return;
+    const pool = [...LAST.strong, ...LAST.conditional, ...LAST.unverified];
+    const items = policyId ? pool.filter(i => i.policy.id === policyId) : pool;
+
+    const res = buildICS(items, new Date());
+    if (!res.ics) {
+      alert('这些项目都是常态受理，没有固定截止日期，暂不需要日历提醒。\n\n' +
+            '有申报窗口的项目（如前海十二条、个税补贴）才会生成提醒。');
+      return;
+    }
+    const name = policyId
+      ? `${items[0].policy.name.replace(/[\\/:*?"<>|·\s]/g, '')}-申报提醒.ics`
+      : '深圳补贴申报提醒.ics';
+    downloadICS(res.ics, name);
   }
 
   function renderAll(r, p) {
@@ -170,6 +205,7 @@
     if (total === 0) return renderNothing(r);
 
     let h = renderSummary(s);
+    h += renderToolbar(r);
 
     if (r.strong.length) {
       h += `<div class="group-title">条件已满足 · ${r.strong.length} 项</div>`;
@@ -186,6 +222,17 @@
     if (r.nearMiss.length) h += renderNear(r.nearMiss);
     if (r.exclusion_warnings.length) h += renderExcl(r.exclusion_warnings);
     return h;
+  }
+
+  function renderToolbar(r) {
+    const pool = [...r.strong, ...r.conditional, ...r.unverified];
+    const hasDated = pool.some(i =>
+      ['open', 'upcoming', 'pending', 'closed'].includes(i.window.state));
+    if (!hasDated) return '';
+    return `<div class="toolbar">
+      <button id="exportAll">加入日历提醒</button>
+      <span class="tip">导出 .ics 文件，点开即可加进手机日历。不用注册，我们不存你的任何信息。</span>
+    </div>`;
   }
 
   function renderSummary(s) {
@@ -275,7 +322,39 @@
     const w = item.window;
     h += `<div><span class="win ${w.state}">${esc(w.label)}`;
     if (w.days_left != null && w.state === 'open') h += `　还剩 ${w.days_left} 天`;
+    if (w.days_left != null && w.state === 'upcoming') h += `　${w.days_left} 天后开放`;
     h += '</span></div>';
+
+    // 新年度指南未发布时，把「该盯哪里」讲清楚 —— 这是用户最需要的信息
+    if (w.state === 'pending') {
+      let n = '<div class="winnote">';
+      if (w.status_note) n += esc(w.status_note);
+      if (w.last_year) {
+        n += `<div style="margin-top:5px">去年参考：${esc(w.last_year.start)} 至 ` +
+             `${esc(w.last_year.actual_end || w.last_year.end)}` +
+             (w.last_year.guide_published
+               ? `，指南于 ${esc(w.last_year.guide_published)} 发布` : '') + '</div>';
+      }
+      if (w.watch_urls?.length) {
+        n += '<div style="margin-top:5px">关注这里：' + w.watch_urls.map(u =>
+          `<a href="${esc(u)}" target="_blank" rel="noopener">${esc(u)}</a>`).join('　') +
+          '</div>';
+      }
+      n += '</div>';
+      h += n;
+    }
+
+    // 已结束时提示下一轮时间
+    if (w.state === 'closed' && w.watch_urls?.length) {
+      h += '<div class="winnote">下一轮开放前请留意：' + w.watch_urls.map(u =>
+        `<a href="${esc(u)}" target="_blank" rel="noopener">${esc(u)}</a>`).join('　') +
+        '</div>';
+    }
+
+    // 单条日历导出（仅对有时间概念的项显示）
+    if (['open', 'upcoming', 'pending', 'closed'].includes(w.state)) {
+      h += `<div><button class="ical" data-ical="${esc(p.id)}">加入日历提醒</button></div>`;
+    }
 
     // 办理信息
     const ap = p.application || {};
@@ -290,23 +369,42 @@
 
     // 材料与流程
     if (ap.materials?.length || ap.steps?.length) {
-      h += '<details><summary>所需材料与办理流程</summary><div class="body">';
+      const n = (ap.materials?.length || 0);
+      h += `<details><summary>办理流程与材料${n ? `（${n} 份材料）` : ''}</summary>` +
+           '<div class="body">';
+
+      if (ap.steps?.length) {
+        h += '<b>办理步骤</b><ol class="steps">' + ap.steps.map(s =>
+          `<li>${esc(s.action)}` +
+          (s.duration ? `<div class="dur">用时：${esc(s.duration)}</div>` : '') +
+          '</li>').join('') + '</ol>';
+      }
+      if (ap.processing_time) {
+        h += `<div style="margin:6px 0"><b>整体时长</b>：${esc(ap.processing_time)}</div>`;
+      }
       if (ap.materials?.length) {
-        h += '<b>所需材料</b><ul>' +
+        h += '<b>需要准备的材料</b><ul class="matlist">' +
           ap.materials.map(m => `<li>${esc(m)}</li>`).join('') + '</ul>';
       }
-      if (ap.steps?.length) {
-        h += '<b>办理步骤</b><ol>' + ap.steps.map(s =>
-          `<li>${esc(s.action)}${s.duration ? `（${esc(s.duration)}）` : ''}</li>`).join('') + '</ol>';
+      if (ap.tax_note) {
+        h += `<div class="quote">${esc(ap.tax_note)}</div>`;
       }
-      if (ap.processing_time) h += `<div>整体时长：${esc(ap.processing_time)}</div>`;
+      if (ap.termination_rules) {
+        h += `<div class="quote">终止发放的情形：${esc(ap.termination_rules)}</div>`;
+      }
       if (ap.channel_url) {
-        h += `<div style="margin-top:6px">办理入口：
+        h += `<div style="margin-top:8px"><b>办理入口</b>：
               <a href="${esc(ap.channel_url)}" target="_blank" rel="noopener">
               ${esc(ap.channel_url)}</a></div>`;
       }
+      if (ap.office_address) {
+        h += `<div><b>办理地址</b>：${esc(ap.office_address)}</div>`;
+      }
       if (ap.contact_phone?.length) {
-        h += `<div>咨询电话：${ap.contact_phone.slice(0, 4).map(esc).join('　')}</div>`;
+        h += `<div><b>咨询电话</b>：${ap.contact_phone.slice(0, 4).map(esc).join('　')}</div>`;
+      }
+      if (ap.handling_note) {
+        h += `<div style="margin-top:4px">${esc(ap.handling_note)}</div>`;
       }
       h += '</div></details>';
     }

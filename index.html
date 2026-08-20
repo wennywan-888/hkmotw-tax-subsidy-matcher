@@ -83,7 +83,34 @@
   .win.open{background:var(--danger-bg);color:var(--danger);font-weight:600}
   .win.upcoming{background:var(--warn-bg);color:var(--warn)}
   .win.rolling{background:var(--ok-bg);color:var(--ok)}
+  .win.pending{background:var(--warn-bg);color:var(--warn);font-weight:500}
   .win.closed{background:#f1efe8;color:#5f5e5a}
+  .win.unknown{background:#f1efe8;color:#5f5e5a}
+
+  .winnote{font-size:12px;color:var(--warn);background:var(--warn-bg);
+           border-radius:6px;padding:8px 10px;margin:6px 0;line-height:1.55}
+  .winnote a{color:var(--brand-d);word-break:break-all}
+
+  .ical{display:inline-block;font-size:12px;padding:5px 10px;border:1px solid var(--brand);
+        background:#fff;color:var(--brand);border-radius:6px;cursor:pointer;margin-top:8px}
+  .ical:hover{background:#f0f6ff}
+
+  .toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+  .toolbar button{font-size:13px;padding:8px 14px;border:1px solid var(--brand);
+                  background:#fff;color:var(--brand);border-radius:8px;cursor:pointer}
+  .toolbar button:hover{background:#f0f6ff}
+  .toolbar .tip{font-size:12px;color:var(--sub);flex:1;min-width:180px}
+
+  .steps{counter-reset:s;list-style:none;margin:6px 0}
+  .steps li{counter-increment:s;position:relative;padding-left:26px;margin-bottom:6px}
+  .steps li::before{content:counter(s);position:absolute;left:0;top:2px;
+    width:18px;height:18px;border-radius:50%;background:var(--brand);color:#fff;
+    font-size:11px;line-height:18px;text-align:center}
+  .steps li .dur{color:var(--sub);font-size:12px}
+  .matlist{list-style:none;margin:6px 0}
+  .matlist li{padding-left:18px;position:relative;margin-bottom:5px}
+  .matlist li::before{content:'';position:absolute;left:4px;top:8px;width:6px;height:6px;
+    border-radius:50%;background:var(--brand);opacity:.45}
 
   details{margin-top:10px;border-top:1px solid var(--line);padding-top:8px}
   details summary{font-size:13px;color:var(--brand);cursor:pointer;font-weight:500}
@@ -220,6 +247,7 @@
 
 <script src="src/matcher.js"></script>
 <script src="src/loader.js"></script>
+<script src="src/calendar.js"></script>
 <script src="src/app.js"></script>
 </body>
 </html>

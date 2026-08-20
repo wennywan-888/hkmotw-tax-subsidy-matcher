@@ -119,34 +119,68 @@ function estimateTaxRebate(annualIncome) {
   };
 }
 
-/** 判断申报窗口状态 */
+/**
+ * 判断申报窗口状态
+ *
+ * 有个容易忽略的状态：年度集中受理的政策，在新年度指南尚未发布时，
+ * 窗口日期是空的。这时候既不能显示「本年度已结束」（会让人以为错过了），
+ * 也不能只说「待公布」（信息量太少）。要明确告诉用户：
+ * 指南还没出、去年是什么时候、该盯哪个页面。
+ */
 function windowStatus(policy, today = new Date()) {
   const w = policy.application_window || {};
   if (w.window_type === 'rolling') {
     return { state: 'rolling', label: '常态受理', days_left: null };
   }
+
   const end = w.actual_end_extended || w.end;
+
+  // 新年度指南未发布
   if (!end) {
-    return { state: 'unknown', label: w.next_expected || '窗口待公布', days_left: null };
+    const ly = w.last_year_window;
+    let label = w.next_expected || '本年度申报指南尚未发布';
+    if (ly) {
+      label = `本年度指南尚未发布　去年为 ${ly.start} 至 ${ly.actual_end || ly.end}`;
+    }
+    return {
+      state: 'pending',
+      label,
+      days_left: null,
+      status_note: w.status_note || '',
+      last_year: ly || null,
+      watch_urls: w.watch_urls || [],
+      // 按去年同期估算，仅用于排序提示，不作为确定日期展示
+      estimated_month: ly?.start ? Number(String(ly.start).split('-')[1]) : null
+    };
   }
+
   const endDate = new Date(end);
   const startDate = w.start ? new Date(w.start) : null;
   const dayMs = 86400000;
 
   if (today > endDate) {
-    return { state: 'closed', label: `本年度已结束，下次预计：${w.next_expected || '待公布'}`, days_left: null };
+    return {
+      state: 'closed',
+      label: `本年度已结束，下次预计：${w.next_expected || '待公布'}`,
+      days_left: null,
+      watch_urls: w.watch_urls || []
+    };
   }
   if (startDate && today < startDate) {
     return {
       state: 'upcoming',
       label: `将于 ${w.start} 开放`,
-      days_left: Math.ceil((startDate - today) / dayMs)
+      days_left: Math.ceil((startDate - today) / dayMs),
+      window_start: w.start,
+      window_end: end
     };
   }
   return {
     state: 'open',
     label: `受理中，截止 ${end}`,
-    days_left: Math.ceil((endDate - today) / dayMs)
+    days_left: Math.ceil((endDate - today) / dayMs),
+    window_start: w.start,
+    window_end: end
   };
 }
 
@@ -209,8 +243,10 @@ function match(data, profile, today = new Date()) {
   }
 
   // 按窗口紧迫度排序：开放中且剩余天数少的优先
+  // pending（新年度指南待发布）排在常态受理之后 —— 它需要用户关注，但暂时无法行动
   const byUrgency = (a, b) => {
-    const rank = s => ({ open: 0, upcoming: 1, rolling: 2, unknown: 3, closed: 4 }[s.state] ?? 5);
+    const rank = s => ({ open: 0, upcoming: 1, rolling: 2,
+                         pending: 3, unknown: 4, closed: 5 }[s.state] ?? 6);
     const d = rank(a.window) - rank(b.window);
     if (d !== 0) return d;
     if (a.window.days_left != null && b.window.days_left != null) {

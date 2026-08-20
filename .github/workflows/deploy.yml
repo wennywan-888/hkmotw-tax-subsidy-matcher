@@ -72,7 +72,7 @@ jobs:
         run: |
           mkdir -p _site/src _site/data
           cp index.html _site/
-          cp src/matcher.js src/loader.js src/app.js _site/src/
+          cp src/matcher.js src/loader.js src/calendar.js src/app.js _site/src/
           cp data/policies.json _site/data/
           # 关掉 Jekyll 处理，避免下划线开头的文件被忽略
           touch _site/.nojekyll
