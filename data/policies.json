@@ -269,11 +269,13 @@
         }
       ],
       "verification": {
-        "status": "verified",
+        "status": "unverified",
         "last_verified": "2026-08-20",
         "verified_by": "前海管理局官网申报指南原文 + 深i企政策汇编",
         "pending_items": [
-          "补贴标准的分档金额来自深i企政策汇编转载，建议另行核对深前海规〔2024〕12号原文PDF以确认"
+          "补贴标准的分档金额来自深i企政策汇编转载，建议另行核对深前海规〔2024〕12号原文PDF以确认",
+          "[2026-08-20 巡检] 链接失效·sources.url：链接无法访问：curl: HTTP 0 / urllib: URLError: <urlopen error [SSL: BAD_ECPOINT] bad ecpoint (_ssl.c:1010)>（该来源为一手来源）",
+          "[2026-08-20 巡检] 页面内容变动·page_content：来源页面内容变动约 13%，须人工打开原文核对政策条款是否调整"
         ],
         "notes": "重要更正：原型此前写作「每月应税工资20%，最高8000元/月」，与官方按学历定额标准不符，已按官方口径更正。 2026-08-20 核查：2026年度申报指南尚未发布（官网公告列表至 08-19 无相关公告，且前海管理局 08-05 官方答复未给出具体时间）。窗口已置为待公布，2025 年度窗口归档至 year_history。"
       },
@@ -443,10 +445,13 @@
         }
       ],
       "verification": {
-        "status": "verified",
+        "status": "unverified",
         "last_verified": "2026-08-20",
         "verified_by": "前海管理局官网申报指南原文",
-        "pending_items": [],
+        "pending_items": [
+          "[2026-08-20 巡检] 链接失效·sources.url：链接无法访问：curl: HTTP 0 / urllib: URLError: <urlopen error [SSL: BAD_ECPOINT] bad ecpoint (_ssl.c:1010)>（该来源为一手来源）",
+          "[2026-08-20 巡检] 页面内容变动·page_content：来源页面内容变动约 13%，须人工打开原文核对政策条款是否调整"
+        ],
         "notes": "2026-08-20 核查：2026年度申报指南尚未发布（官网公告列表至 08-19 无相关公告，且前海管理局 08-05 官方答复未给出具体时间）。窗口已置为待公布，2025 年度窗口归档至 year_history。"
       },
       "validity": {
@@ -593,10 +598,13 @@
         }
       ],
       "verification": {
-        "status": "verified",
+        "status": "unverified",
         "last_verified": "2026-08-20",
         "verified_by": "前海管理局官网申报指南原文",
-        "pending_items": [],
+        "pending_items": [
+          "[2026-08-20 巡检] 链接失效·sources.url：链接无法访问：curl: HTTP 0 / urllib: URLError: <urlopen error [SSL: BAD_ECPOINT] bad ecpoint (_ssl.c:1010)>（该来源为一手来源）",
+          "[2026-08-20 巡检] 页面内容变动·page_content：来源页面内容变动约 13%，须人工打开原文核对政策条款是否调整"
+        ],
         "notes": "符合深圳市新引进博士人才生活补贴及大湾区青年就业计划生活补助条件的，按有关规定另行申请 2026-08-20 核查：2026年度申报指南尚未发布（官网公告列表至 08-19 无相关公告，且前海管理局 08-05 官方答复未给出具体时间）。窗口已置为待公布，2025 年度窗口归档至 year_history。"
       },
       "validity": {
@@ -800,10 +808,13 @@
         }
       ],
       "verification": {
-        "status": "verified",
+        "status": "unverified",
         "last_verified": "2026-08-17",
         "verified_by": "深圳市财政局官网 深财法〔2026〕1号 全文",
-        "pending_items": [],
+        "pending_items": [
+          "[2026-08-20 巡检] 链接失效·sources.url：链接无法访问：curl: HTTP 0 / urllib: URLError: <urlopen error [SSL: BAD_ECPOINT] bad ecpoint (_ssl.c:1010)>（该来源为一手来源）",
+          "[2026-08-20 巡检] 申报窗口疑似变动·application_window：数据表记录的申报窗口日期在所有来源页面中均未出现，可能已发布新年度申报指南。错过申报窗口代价大，请优先核对。"
+        ],
         "notes": "重要更正：原型标注申报窗口为「次年年中受理」，与2026年指南「1月1日至3月31日」不符，已更正。原型引用的深财法〔2025〕20号已被本文件替代。"
       },
       "validity": {
@@ -953,10 +964,12 @@
         }
       ],
       "verification": {
-        "status": "verified",
+        "status": "unverified",
         "last_verified": "2026-08-17",
         "verified_by": "深圳市人社局港澳就业创业专题官方专区 + 省厅细则原文",
-        "pending_items": [],
+        "pending_items": [
+          "[2026-08-20 巡检] 链接失效·sources.url：链接无法访问：curl: HTTP 0 / urllib: URLError: <urlopen error [SSL: BAD_ECPOINT] bad ecpoint (_ssl.c:1010)>（该来源为一手来源）"
+        ],
         "notes": "深圳标准（不超600元）高于省标准（300元），符合省细则「有条件的地市可适当提高」规定"
       },
       "validity": {
@@ -1082,11 +1095,12 @@
         }
       ],
       "verification": {
-        "status": "verified",
+        "status": "unverified",
         "last_verified": "2026-08-17",
         "verified_by": "广东省人社厅官网全文 + 深圳市人社局转发文件",
         "pending_items": [
-          "深圳市具体经办口径与申请材料清单建议向 12333 核实"
+          "深圳市具体经办口径与申请材料清单建议向 12333 核实",
+          "[2026-08-20 巡检] 链接失效·sources.url：链接无法访问：curl: HTTP 0 / urllib: URLError: <urlopen error [SSL: BAD_ECPOINT] bad ecpoint (_ssl.c:1010)>（该来源为一手来源）"
         ],
         "notes": ""
       },
@@ -1229,10 +1243,12 @@
         }
       ],
       "verification": {
-        "status": "verified",
+        "status": "unverified",
         "last_verified": "2026-08-17",
         "verified_by": "深圳市人社局专区 + 福田区人才工作局申请指南",
-        "pending_items": [],
+        "pending_items": [
+          "[2026-08-20 巡检] 链接失效·sources.url：链接无法访问：curl: HTTP 0 / urllib: URLError: <urlopen error [SSL: BAD_ECPOINT] bad ecpoint (_ssl.c:1010)>（该来源为一手来源）"
+        ],
         "notes": "福田英才荟为区级独立政策，与市级实习补助的可否叠加需向经办部门确认"
       },
       "validity": {
@@ -1395,10 +1411,12 @@
         }
       ],
       "verification": {
-        "status": "verified",
+        "status": "unverified",
         "last_verified": "2026-08-17",
         "verified_by": "深圳市人社局港澳就业创业专题 + 省厅细则",
-        "pending_items": [],
+        "pending_items": [
+          "[2026-08-20 巡检] 链接失效·sources.url：链接无法访问：curl: HTTP 0 / urllib: URLError: <urlopen error [SSL: BAD_ECPOINT] bad ecpoint (_ssl.c:1010)>（该来源为一手来源）"
+        ],
         "notes": ""
       },
       "validity": {
@@ -1585,10 +1603,12 @@
         }
       ],
       "verification": {
-        "status": "verified",
+        "status": "unverified",
         "last_verified": "2026-08-17",
         "verified_by": "深圳市人社局港澳就业创业专题官方专区",
-        "pending_items": [],
+        "pending_items": [
+          "[2026-08-20 巡检] 链接失效·sources.url：链接无法访问：curl: HTTP 0 / urllib: URLError: <urlopen error [SSL: BAD_ECPOINT] bad ecpoint (_ssl.c:1010)>（该来源为一手来源）"
+        ],
         "notes": "省级细则第十二条标准为每年最高6000元，深圳分认定载体内外与人员类别细化分档"
       },
       "validity": {
@@ -1735,10 +1755,12 @@
         }
       ],
       "verification": {
-        "status": "verified",
+        "status": "unverified",
         "last_verified": "2026-08-17",
         "verified_by": "深圳市人社局港澳就业创业专题官方专区",
-        "pending_items": [],
+        "pending_items": [
+          "[2026-08-20 巡检] 链接失效·sources.url：链接无法访问：curl: HTTP 0 / urllib: URLError: <urlopen error [SSL: BAD_ECPOINT] bad ecpoint (_ssl.c:1010)>（该来源为一手来源）"
+        ],
         "notes": ""
       },
       "validity": {
@@ -1873,12 +1895,13 @@
         }
       ],
       "verification": {
-        "status": "verified",
+        "status": "unverified",
         "last_verified": "2026-08-17",
         "verified_by": "深圳市人社局港澳就业创业专题官方专区",
         "pending_items": [
           "中国台湾居民适用性未在身份条件中明确列出，需向市人社局核实",
-          "香港非永久性居民（优才等入境计划）适用性待核实"
+          "香港非永久性居民（优才等入境计划）适用性待核实",
+          "[2026-08-20 巡检] 链接失效·sources.url：链接无法访问：curl: HTTP 0 / urllib: URLError: <urlopen error [SSL: BAD_ECPOINT] bad ecpoint (_ssl.c:1010)>（该来源为一手来源）"
         ],
         "notes": ""
       },
@@ -2285,11 +2308,12 @@
         }
       ],
       "verification": {
-        "status": "verified",
+        "status": "unverified",
         "last_verified": "2026-08-17",
         "verified_by": "广东省人社厅细则原文 + 深圳市人社局转发文件原文",
         "pending_items": [
-          "18个月上限的官方依据需进一步确认（省细则表述为「参加计划期间」）"
+          "18个月上限的官方依据需进一步确认（省细则表述为「参加计划期间」）",
+          "[2026-08-20 巡检] 链接失效·sources.url：链接无法访问：curl: HTTP 0 / urllib: URLError: <urlopen error [SSL: BAD_ECPOINT] bad ecpoint (_ssl.c:1010)>（该来源为一手来源）"
         ],
         "notes": "标准已从深人社规〔2023〕3号的1000元/月提高至2000元/月"
       },
@@ -2410,11 +2434,12 @@
         }
       ],
       "verification": {
-        "status": "verified",
+        "status": "unverified",
         "last_verified": "2026-08-17",
         "verified_by": "深人社规〔2023〕3号全文（政府网站转载）",
         "pending_items": [
-          "注意：省级层面粤人社规〔2025〕47号已将高校毕业生基层岗位补贴和基层就业补贴整合为粤东粤西粤北地区就业补贴并删除原条款，深圳市级此项是否仍执行需向 12333 核实"
+          "注意：省级层面粤人社规〔2025〕47号已将高校毕业生基层岗位补贴和基层就业补贴整合为粤东粤西粤北地区就业补贴并删除原条款，深圳市级此项是否仍执行需向 12333 核实",
+          "[2026-08-20 巡检] 链接失效·sources.url：链接无法访问：curl: HTTP 0 / urllib: URLError: <urlopen error [SSL: BAD_ECPOINT] bad ecpoint (_ssl.c:1010)>（该来源为一手来源）"
         ],
         "notes": "风险提示：省级政策调整可能影响本项的现行有效性，须优先核实"
       },
@@ -2531,11 +2556,12 @@
         }
       ],
       "verification": {
-        "status": "verified",
+        "status": "unverified",
         "last_verified": "2026-08-17",
         "verified_by": "深圳市人社局港澳就业创业专题官方专区",
         "pending_items": [
-          "中国台湾居民适用性待核实"
+          "中国台湾居民适用性待核实",
+          "[2026-08-20 巡检] 链接失效·sources.url：链接无法访问：curl: HTTP 0 / urllib: URLError: <urlopen error [SSL: BAD_ECPOINT] bad ecpoint (_ssl.c:1010)>（该来源为一手来源）"
         ],
         "notes": ""
       },
@@ -2664,11 +2690,12 @@
         }
       ],
       "verification": {
-        "status": "verified",
+        "status": "unverified",
         "last_verified": "2026-08-17",
         "verified_by": "深圳市人社局港澳就业创业专题官方专区",
         "pending_items": [
-          "补贴上限存在700-3000与700-3600两种表述，需核实最新《深圳市职业技能培训补贴目录》"
+          "补贴上限存在700-3000与700-3600两种表述，需核实最新《深圳市职业技能培训补贴目录》",
+          "[2026-08-20 巡检] 链接失效·sources.url：链接无法访问：curl: HTTP 0 / urllib: URLError: <urlopen error [SSL: BAD_ECPOINT] bad ecpoint (_ssl.c:1010)>（该来源为一手来源）"
         ],
         "notes": ""
       },
@@ -2797,11 +2824,12 @@
         }
       ],
       "verification": {
-        "status": "verified",
+        "status": "unverified",
         "last_verified": "2026-08-17",
         "verified_by": "深圳市人社局港澳就业创业专题官方专区",
         "pending_items": [
-          "中国台湾居民适用性待核实"
+          "中国台湾居民适用性待核实",
+          "[2026-08-20 巡检] 链接失效·sources.url：链接无法访问：curl: HTTP 0 / urllib: URLError: <urlopen error [SSL: BAD_ECPOINT] bad ecpoint (_ssl.c:1010)>（该来源为一手来源）"
         ],
         "notes": ""
       },
@@ -2947,10 +2975,12 @@
         }
       ],
       "verification": {
-        "status": "verified",
+        "status": "unverified",
         "last_verified": "2026-08-17",
         "verified_by": "福田区政府官网申请指南全文",
-        "pending_items": [],
+        "pending_items": [
+          "[2026-08-20 巡检] 链接失效·sources.url：链接无法访问：curl: HTTP 0 / urllib: URLError: <urlopen error [SSL: BAD_ECPOINT] bad ecpoint (_ssl.c:1010)>（该来源为一手来源）"
+        ],
         "notes": "本指南所指支持资金为税前金额，项目受年度财政预算限制，支持标准存在调整可能"
       },
       "validity": {
